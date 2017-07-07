@@ -35,23 +35,43 @@ tabuleiro.create_rectangle(110,310,210,410, fill="white")
 tabuleiro.create_rectangle(210,310,310,410, fill="white")
 tabuleiro.create_rectangle(310,310,410,410, fill="white")
 
-fotoCacador = PhotoImage(file="cacador-com-arco-e-flecha_318-53990.gif")
-tabuleiro.create_image(60,380, image=fotoCacador)
+fotoCacador = PhotoImage(file="pirata.gif")
+tabuleiro.create_image(60,370, image=fotoCacador)
+
+fotoWumpus = PhotoImage(file="wumpus_small.gif")
+fotoTesouro = PhotoImage(file="0.gif")
 
 buracoRetangulo = []
 coordsBuraco1 = []
 coordsBuraco2 = []
 coordsBuraco3 = []
+WumpusRetangulo = {}
+coordsWumpus = []
+tesouroWumpus = {}
+coordsTesouro = []
 
 while(len(buracoRetangulo) < 3):
     num_random = randint(1,16)
     if((num_random != 13 and num_random != 14 and num_random != 9) and num_random not in buracoRetangulo):
         buracoRetangulo.append(num_random)
 
+while(True):
+    num_random = randint(1,16)
+    if((num_random != 13 and num_random != 14 and num_random != 9) and num_random not in buracoRetangulo):
+        WumpusRetangulo = num_random
+        break
+
+while(True):
+    num_random = randint(1,16)
+    if((num_random != 13 and num_random != 14 and num_random != 9) and num_random not in buracoRetangulo and num_random != WumpusRetangulo):
+        tesouroWumpus = num_random
+        break
+
 coordsBuraco1 = tabuleiro.coords(buracoRetangulo[0])
 coordsBuraco2 = tabuleiro.coords(buracoRetangulo[1])
 coordsBuraco3 = tabuleiro.coords(buracoRetangulo[2])
-
+coordsWumpus = tabuleiro.coords(WumpusRetangulo)
+coordsTesouro = tabuleiro.coords(tesouroWumpus)
 
 tabuleiro.create_oval(coordsBuraco1[0], coordsBuraco1[1], coordsBuraco1[2], coordsBuraco1[3], fill="black")
 tabuleiro.create_text(coordsBuraco1[0]+50, coordsBuraco1[1]+50, text="SE FUDEU", fill="white")
@@ -59,6 +79,8 @@ tabuleiro.create_oval(coordsBuraco2[0], coordsBuraco2[1], coordsBuraco2[2], coor
 tabuleiro.create_text(coordsBuraco2[0]+50, coordsBuraco2[1]+50, text="SE FUDEU", fill="white")
 tabuleiro.create_oval(coordsBuraco3[0], coordsBuraco3[1], coordsBuraco3[2], coordsBuraco3[3], fill="black", state=HIDDEN)
 tabuleiro.create_text(coordsBuraco3[0]+50, coordsBuraco3[1]+50, text="SE FUDEU", fill="white")
+tabuleiro.create_image(coordsWumpus[0]+50, coordsWumpus[1]+50, image=fotoWumpus)
+tabuleiro.create_image(coordsTesouro[0]+50, coordsTesouro[1]+50, image=fotoTesouro)
 
 #fotoPit = PhotoImage(file="pit.gif")
 #tabuleiro.create_image(60,260, image=fotoPit)
