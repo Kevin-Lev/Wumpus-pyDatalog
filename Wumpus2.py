@@ -167,18 +167,17 @@ frameTabuleiro.place(x=50, y=50)
 tabuleiro = Canvas(frameTabuleiro, bg="white", height=420, width=420)
 tabuleiro.pack(fill=BOTH, expand=YES)
 
-def leftKey(event):
-    print("Seta esquerda pressionada")
 
-def rightKey(event):
-    print("Seta direita pressionada")
-
-def upKey(event):
-    print("Seta para cima pressionada")
-
-def downKey(event):
-    print("Seta para baixo pressionada")
-
+buracoRetangulo = []
+coordsBuraco1 = []
+coordsBuraco2 = []
+coordsBuraco3 = []
+WumpusRetangulo = {}
+coordsWumpus = []
+tesouroWumpus = {}
+coordsTesouro = []
+coordsCacador = []
+Pirata = {}
 
 #1ª Linha
 tabuleiro.create_rectangle(10,10,110,110, fill="white")
@@ -204,20 +203,65 @@ tabuleiro.create_rectangle(110,310,210,410, fill="white")
 tabuleiro.create_rectangle(210,310,310,410, fill="white")
 tabuleiro.create_rectangle(310,310,410,410, fill="white")
 
+def leftKey(event):
+    global Pirata, coordsCacador
+    tabuleiro.delete(Pirata)
+    Pirata = tabuleiro.create_image(coordsCacador[0]-100,coordsCacador[1], image=fotoCacador)
+    coordsCacador = tabuleiro.coords(Pirata)
+    print("Seta esquerda pressionada")
+
+def rightKey(event):
+    global Pirata, coordsCacador
+    tabuleiro.delete(Pirata)
+    Pirata = tabuleiro.create_image(coordsCacador[0]+100,coordsCacador[1], image=fotoCacador)
+    coordsCacador = tabuleiro.coords(Pirata)
+    print("Seta direita pressionada")
+
+def upKey(event):
+    global Pirata, coordsCacador
+    tabuleiro.delete(Pirata)
+    Pirata = tabuleiro.create_image(coordsCacador[0],coordsCacador[1]-100, image=fotoCacador)
+    coordsCacador = tabuleiro.coords(Pirata)
+    print("Seta para cima pressionada")
+
+def downKey(event):
+    global Pirata, coordsCacador
+    tabuleiro.delete(Pirata)
+    Pirata = tabuleiro.create_image(coordsCacador[0],coordsCacador[1]+100, image=fotoCacador)
+    coordsCacador = tabuleiro.coords(Pirata)
+    print("Seta para baixo pressionada")
+
+
 fotoCacador = PhotoImage(file="pirata.gif")
-tabuleiro.create_image(60,370, image=fotoCacador)
+Pirata = tabuleiro.create_image(60,270, image=fotoCacador)
+coordsCacador = tabuleiro.coords(Pirata)
 
 fotoWumpus = PhotoImage(file="wumpus_small.gif")
 fotoTesouro = PhotoImage(file="0.gif")
 
-buracoRetangulo = []
-coordsBuraco1 = []
-coordsBuraco2 = []
-coordsBuraco3 = []
-WumpusRetangulo = {}
-coordsWumpus = []
-tesouroWumpus = {}
-coordsTesouro = []
+def paraEsquerda(self):
+    if(coordsCacador[0] > 110):
+        leftKey(self)
+    else:
+        print("Não é possível ir para a esquerda !!")
+
+def paraDireita(self):
+    if(coordsCacador[0] < 310):
+        rightKey(self)
+    else:
+        print("Não é possível ir para a direita !!")
+
+def paraCima(self):
+    if(coordsCacador[1] > 110):
+        upKey(self)
+    else:
+        print("Não é possível ir para cima !!")
+
+def paraBaixo(self):
+    if(coordsCacador[1] < 310):
+        downKey(self)
+    else:
+        print("Não é possível ir para baixo !!")
 
 while(len(buracoRetangulo) < 3):
     num_random = randint(1,16)
@@ -251,11 +295,10 @@ tabuleiro.create_text(coordsBuraco3[0]+50, coordsBuraco3[1]+50, text="SE FUDEU",
 tabuleiro.create_image(coordsWumpus[0]+50, coordsWumpus[1]+50, image=fotoWumpus)
 tabuleiro.create_image(coordsTesouro[0]+50, coordsTesouro[1]+50, image=fotoTesouro)
 
-tabuleiro.bind('<Left>', leftKey)
-tabuleiro.bind('<Right', rightKey)
-tabuleiro.bind('<Up>', upKey)
-tabuleiro.bind('<Down>', downKey)
+tabuleiro.bind('<Left>', paraEsquerda)
+tabuleiro.bind('<Right>', paraDireita)
+tabuleiro.bind('<Up>', paraCima)
+tabuleiro.bind('<Down>', paraBaixo)
+tabuleiro.focus_set()
 
-
-
-mainframe.mainloop()
+mainloop()
