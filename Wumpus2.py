@@ -11,6 +11,19 @@ frameTabuleiro.place(x=50, y=50)
 tabuleiro = Canvas(frameTabuleiro, bg="white", height=420, width=420)
 tabuleiro.pack(fill=BOTH, expand=YES)
 
+def leftKey(event):
+    print("Seta esquerda pressionada")
+
+def rightKey(event):
+    print("Seta direita pressionada")
+
+def upKey(event):
+    print("Seta para cima pressionada")
+
+def downKey(event):
+    print("Seta para baixo pressionada")
+
+
 #1ª Linha
 tabuleiro.create_rectangle(10,10,110,110, fill="white")
 tabuleiro.create_rectangle(110,10,210,110, fill="white")
@@ -82,7 +95,11 @@ tabuleiro.create_text(coordsBuraco3[0]+50, coordsBuraco3[1]+50, text="SE FUDEU",
 tabuleiro.create_image(coordsWumpus[0]+50, coordsWumpus[1]+50, image=fotoWumpus)
 tabuleiro.create_image(coordsTesouro[0]+50, coordsTesouro[1]+50, image=fotoTesouro)
 
-#fotoPit = PhotoImage(file="pit.gif")
-#tabuleiro.create_image(60,260, image=fotoPit)
+tabuleiro.bind('<Left>', leftKey)
+tabuleiro.bind('<Right', rightKey)
+tabuleiro.bind('<Up>', upKey)
+tabuleiro.bind('<Down>', downKey)
+
+
 
 mainframe.mainloop()
