@@ -233,7 +233,7 @@ def downKey(event):
 
 
 fotoCacador = PhotoImage(file="pirata.gif")
-Pirata = tabuleiro.create_image(60,270, image=fotoCacador)
+Pirata = tabuleiro.create_image(60,370, image=fotoCacador)
 coordsCacador = tabuleiro.coords(Pirata)
 
 fotoWumpus = PhotoImage(file="wumpus_small.gif")
