@@ -164,7 +164,7 @@ mainframe.geometry("800x600+0+150")
 frameTabuleiro = Frame(mainframe, height=410, width=410)
 frameTabuleiro.place(x=50, y=50)
 
-tabuleiro = Canvas(frameTabuleiro, bg="white", height=420, width=420)
+tabuleiro = Canvas(frameTabuleiro, bg="black", height=420, width=420)
 tabuleiro.pack(fill=BOTH, expand=YES)
 
 
