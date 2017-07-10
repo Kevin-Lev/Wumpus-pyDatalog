@@ -263,6 +263,59 @@ def paraBaixo(self):
     else:
         print("Não é possível ir para baixo !!")
 
+def getRetangulo(self, pirataX, pirataY):
+    if(pirataX == 60 and pirataY == 70):
+        return 1
+    elif(pirataX == 160 and pirataY == 70):
+        return 2
+    elif(pirataX == 260 and pirataY == 70):
+        return 3
+    elif(pirataX == 360 and pirataY == 70):
+        return 4
+    elif(pirataX == 60 and pirataY == 170):
+        return 5
+    elif(pirataX == 160 and pirataY == 170):
+        return 6
+    elif(pirataX == 260 and pirataY == 170):
+        return 7
+    elif(pirataX == 360 and pirataY == 170):
+        return 8
+    elif(pirataX == 60 and pirataY == 270):
+        return 9
+    elif(pirataX == 160 and pirataY == 270):
+        return 10
+    elif(pirataX == 260 and pirataY == 270):
+        return 11
+    elif(pirataX == 360 and pirataY == 270):
+        return 12
+    elif(pirataX == 60 and pirataY == 370):
+        return 13
+    elif(pirataX == 160 and pirataY == 370):
+        return 14
+    elif(pirataX == 260 and pirataY == 370):
+        return 15
+    else:
+        return 16
+
+
+def
+
+def bangCima(self):
+    print("atirou para cima!")
+    idRetangulo = getRetangulo(self, coordsCacador[0], coordsCacador[1])
+    print(idRetangulo)
+
+
+def bangBaixo(self):
+    print("Atirou para baixo!")
+
+def bangEsquerda(self):
+    print("Atirou para a esquerda!")
+
+def bangDireita(self):
+    print("Atirou para a direita!")
+
+
 while(len(buracoRetangulo) < 3):
     num_random = randint(1,16)
     if((num_random != 13 and num_random != 14 and num_random != 9) and num_random not in buracoRetangulo):
@@ -295,10 +348,15 @@ tabuleiro.create_text(coordsBuraco3[0]+50, coordsBuraco3[1]+50, text="SE FUDEU",
 tabuleiro.create_image(coordsWumpus[0]+50, coordsWumpus[1]+50, image=fotoWumpus)
 tabuleiro.create_image(coordsTesouro[0]+50, coordsTesouro[1]+50, image=fotoTesouro)
 
+
 tabuleiro.bind('<Left>', paraEsquerda)
 tabuleiro.bind('<Right>', paraDireita)
 tabuleiro.bind('<Up>', paraCima)
 tabuleiro.bind('<Down>', paraBaixo)
+tabuleiro.bind('<Control-Key-Up>', bangCima)
+tabuleiro.bind('<Control-Key-Down>', bangBaixo)
+tabuleiro.bind('<Control-Key-Left>', bangEsquerda)
+tabuleiro.bind('<Control-Key-Right>', bangDireita)
 tabuleiro.focus_set()
 
 mainloop()
