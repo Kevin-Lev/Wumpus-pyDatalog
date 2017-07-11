@@ -178,6 +178,8 @@ tesouroWumpus = {}
 coordsTesouro = []
 coordsCacador = []
 Pirata = {}
+linhaColunaRet = {}
+
 
 #1ª Linha
 tabuleiro.create_rectangle(10,10,110,110, fill="white")
@@ -297,14 +299,63 @@ def getRetangulo(self, pirataX, pirataY):
     else:
         return 16
 
+def getLinhaColuna(self, idRet):
+    if(idRet == 1):
+        pi = pyDatalog.ask('linha[1] == X')
+        pi2 = pyDatalog.ask('coluna[1] == X')
+    elif(idRet == 2):
+        pi = pyDatalog.ask('linha[2] == X')
+        pi2 = pyDatalog.ask('coluna[2] == X')
+    elif(idRet == 3):
+        pi = pyDatalog.ask('linha[3] == X')
+        pi2 = pyDatalog.ask('coluna[3] == X')
+    elif(idRet == 4):
+        pi = pyDatalog.ask('linha[4] == X')
+        pi2 = pyDatalog.ask('coluna[4] == X')
+    elif(idRet == 5):
+        pi = pyDatalog.ask('linha[5] == X')
+        pi2 = pyDatalog.ask('coluna[5] == X')
+    elif(idRet == 6):
+        pi = pyDatalog.ask('linha[6] == X')
+        pi2 = pyDatalog.ask('coluna[6] == X')
+    elif(idRet == 7):
+        pi = pyDatalog.ask('linha[7] == X')
+        pi2 = pyDatalog.ask('coluna[7] == X')
+    elif(idRet == 8):
+        pi = pyDatalog.ask('linha[8] == X')
+        pi2 = pyDatalog.ask('coluna[8] == X')
+    elif(idRet == 9):
+        pi = pyDatalog.ask('linha[9] == X')
+        pi2 = pyDatalog.ask('coluna[9] == X')
+    elif(idRet == 10):
+        pi = pyDatalog.ask('linha[10] == X')
+        pi2 = pyDatalog.ask('coluna[10] == X')
+    elif(idRet == 11):
+        pi = pyDatalog.ask('linha[11] == X')
+        pi2 = pyDatalog.ask('coluna[11] == X')
+    elif(idRet == 12):
+        pi = pyDatalog.ask('linha[12] == X')
+        pi2 = pyDatalog.ask('coluna[12] == X')
+    elif(idRet == 13):
+        pi = pyDatalog.ask('linha[13] == X')
+        pi2 = pyDatalog.ask('coluna[13] == X')
+    elif(idRet == 14):
+        pi = pyDatalog.ask('linha[14] == X')
+        pi2 = pyDatalog.ask('coluna[14] == X')
+    elif(idRet == 15):
+        pi = pyDatalog.ask('linha[15] == X')
+        pi2 = pyDatalog.ask('coluna[15] == X')
+    else:
+        pi = pyDatalog.ask('linha[16] == X')
+        pi2 = pyDatalog.ask('coluna[16] == X')
 
-def
+    return pi, pi2
 
 def bangCima(self):
     print("atirou para cima!")
     idRetangulo = getRetangulo(self, coordsCacador[0], coordsCacador[1])
-    print(idRetangulo)
-
+    linhaColunaRet = getLinhaColuna(self, idRetangulo)
+    print(linhaColunaRet[1])
 
 def bangBaixo(self):
     print("Atirou para baixo!")
