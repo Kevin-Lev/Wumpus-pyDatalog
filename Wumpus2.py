@@ -330,7 +330,10 @@ def fimDeJogo(casaJogador):
     ouro = pyDatalog.ask('tem_ouro(X)')
     if (wumpus[0][0] == casaJogador) or (poco[0][0] == casaJogador) or (poco[1][0] == casaJogador) or (
         poco[2][0] == casaJogador) or ((ouro == None) and (casaJogador == 13)):
-        print("fim de jogo!")
+        #print("fim de jogo!")
+        textoJogo.config(state=NORMAL)
+        textoJogo.insert(END, "Fim de jogo!\nDeseja jogar novamente?\n")
+        textoJogo.config(state=DISABLED)
         return True
     else:
         return False
