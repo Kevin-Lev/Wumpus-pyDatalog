@@ -160,6 +160,7 @@ status['fim_jogo'] == False
 
 mainframe = Tk()
 mainframe.geometry("800x600+0+150")
+mainframe.wm_title("Wumpus Game")
 
 frameTabuleiro = Frame(mainframe, height=410, width=410)
 frameTabuleiro.place(x=50, y=50)
