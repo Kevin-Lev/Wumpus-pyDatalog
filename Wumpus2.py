@@ -4,7 +4,7 @@ from random import randint
 
 pyDatalog.create_terms('tem_poco, tem_brisa, tem_wumpus, tem_fedor, tem_ouro, tem_brilho')
 pyDatalog.create_terms('linha, coluna')
-pyDatalog.create_terms('andar, casa_jogador, status')
+pyDatalog.create_terms('casa_jogador, status')
 pyDatalog.create_terms('X, Y')
 
 # BASE DE LINHAS
@@ -371,17 +371,20 @@ while(len(buracoRetangulo) < 3):
     num_random = randint(1,16)
     if((num_random != 13 and num_random != 14 and num_random != 9) and num_random not in buracoRetangulo):
         buracoRetangulo.append(num_random)
+        + tem_poco(num_random)
 
 while(True):
     num_random = randint(1,16)
     if((num_random != 13 and num_random != 14 and num_random != 9) and num_random not in buracoRetangulo):
         WumpusRetangulo = num_random
+        + tem_wumpus(WumpusRetangulo)
         break
 
 while(True):
     num_random = randint(1,16)
     if((num_random != 13 and num_random != 14 and num_random != 9) and num_random not in buracoRetangulo and num_random != WumpusRetangulo):
         tesouroWumpus = num_random
+        + tem_ouro(num_random)
         break
 
 coordsBuraco1 = tabuleiro.coords(buracoRetangulo[0])
