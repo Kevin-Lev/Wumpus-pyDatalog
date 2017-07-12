@@ -167,6 +167,9 @@ frameTabuleiro.place(x=50, y=50)
 tabuleiro = Canvas(frameTabuleiro, bg="black", height=420, width=420)
 tabuleiro.pack(fill=BOTH, expand=YES)
 
+textoJogo = Text(mainframe, height=30, width=40, bg="black", fg="white")
+textoJogo.place(x=500, y=50)
+
 
 buracoRetangulo = []
 coordsBuraco1 = []
