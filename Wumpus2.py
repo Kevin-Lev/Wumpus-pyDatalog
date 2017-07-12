@@ -403,6 +403,9 @@ def bangEsquerda(self):
 def bangDireita(self):
     print("Atirou para a direita!")
 
+def pegaOuro(self):
+    ouro = getRetangulo(self, coordsTesouro[0], coordsTesouro[1])
+    - tem_ouro(ouro)
 
 while (len(buracoRetangulo) < 3):
     num_random = randint(1, 16)
@@ -448,6 +451,7 @@ tabuleiro.bind('<Control-Key-Up>', bangCima)
 tabuleiro.bind('<Control-Key-Down>', bangBaixo)
 tabuleiro.bind('<Control-Key-Left>', bangEsquerda)
 tabuleiro.bind('<Control-Key-Right>', bangDireita)
+tabuleiro.bind('KP_Enter', pegaOuro)
 tabuleiro.focus_set()
 
 mainloop()
