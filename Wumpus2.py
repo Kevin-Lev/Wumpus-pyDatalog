@@ -167,7 +167,6 @@ frameTabuleiro.place(x=50, y=50)
 tabuleiro = Canvas(frameTabuleiro, bg="black", height=420, width=420)
 tabuleiro.pack(fill=BOTH, expand=YES)
 
-
 buracoRetangulo = []
 coordsBuraco1 = []
 coordsBuraco2 = []
@@ -180,169 +179,203 @@ coordsCacador = []
 Pirata = {}
 linhaColunaRet = {}
 
+# 1ª Linha
+tabuleiro.create_rectangle(10, 10, 110, 110, fill="white")
+tabuleiro.create_rectangle(110, 10, 210, 110, fill="white")
+tabuleiro.create_rectangle(210, 10, 310, 110, fill="white")
+tabuleiro.create_rectangle(310, 10, 410, 110, fill="white")
 
-#1ª Linha
-tabuleiro.create_rectangle(10,10,110,110, fill="white")
-tabuleiro.create_rectangle(110,10,210,110, fill="white")
-tabuleiro.create_rectangle(210,10,310,110, fill="white")
-tabuleiro.create_rectangle(310,10,410,110, fill="white")
+# 2ª Linha
+tabuleiro.create_rectangle(10, 110, 110, 210, fill="white")
+tabuleiro.create_rectangle(110, 110, 210, 210, fill="white")
+tabuleiro.create_rectangle(210, 110, 310, 210, fill="white")
+tabuleiro.create_rectangle(310, 110, 410, 210, fill="white")
 
-#2ª Linha
-tabuleiro.create_rectangle(10,110,110,210, fill="white")
-tabuleiro.create_rectangle(110,110,210,210, fill="white")
-tabuleiro.create_rectangle(210,110,310,210, fill="white")
-tabuleiro.create_rectangle(310,110,410,210, fill="white")
+# 3ª Linha
+tabuleiro.create_rectangle(10, 210, 110, 310, fill="white")
+tabuleiro.create_rectangle(110, 210, 210, 310, fill="white")
+tabuleiro.create_rectangle(210, 210, 310, 310, fill="white")
+tabuleiro.create_rectangle(310, 210, 410, 310, fill="white")
 
-#3ª Linha
-tabuleiro.create_rectangle(10,210,110,310, fill="white")
-tabuleiro.create_rectangle(110,210,210,310, fill="white")
-tabuleiro.create_rectangle(210,210,310,310, fill="white")
-tabuleiro.create_rectangle(310,210,410,310, fill="white")
+# 4ª Linha
+tabuleiro.create_rectangle(10, 310, 110, 410, fill="white")
+tabuleiro.create_rectangle(110, 310, 210, 410, fill="white")
+tabuleiro.create_rectangle(210, 310, 310, 410, fill="white")
+tabuleiro.create_rectangle(310, 310, 410, 410, fill="white")
 
-#4ª Linha
-tabuleiro.create_rectangle(10,310,110,410, fill="white")
-tabuleiro.create_rectangle(110,310,210,410, fill="white")
-tabuleiro.create_rectangle(210,310,310,410, fill="white")
-tabuleiro.create_rectangle(310,310,410,410, fill="white")
 
 def leftKey(event):
     global Pirata, coordsCacador
     tabuleiro.delete(Pirata)
-    Pirata = tabuleiro.create_image(coordsCacador[0]-100,coordsCacador[1], image=fotoCacador)
+    - casa_jogador(getRetangulo(event, coordsCacador[0],coordsCacador[1]))
+    Pirata = tabuleiro.create_image(coordsCacador[0] - 100, coordsCacador[1], image=fotoCacador)
     coordsCacador = tabuleiro.coords(Pirata)
+    + casa_jogador(getRetangulo(event, coordsCacador[0],coordsCacador[1]))
+    fimDeJogo(getRetangulo(event, coordsCacador[0],coordsCacador[1]))
     print("Seta esquerda pressionada")
+
 
 def rightKey(event):
     global Pirata, coordsCacador
     tabuleiro.delete(Pirata)
-    Pirata = tabuleiro.create_image(coordsCacador[0]+100,coordsCacador[1], image=fotoCacador)
+    - casa_jogador(getRetangulo(event, coordsCacador[0],coordsCacador[1]))
+    Pirata = tabuleiro.create_image(coordsCacador[0] + 100, coordsCacador[1], image=fotoCacador)
     coordsCacador = tabuleiro.coords(Pirata)
+    + casa_jogador(getRetangulo(event, coordsCacador[0],coordsCacador[1]))
+    fimDeJogo(getRetangulo(event, coordsCacador[0],coordsCacador[1]))
     print("Seta direita pressionada")
+
 
 def upKey(event):
     global Pirata, coordsCacador
     tabuleiro.delete(Pirata)
-    Pirata = tabuleiro.create_image(coordsCacador[0],coordsCacador[1]-100, image=fotoCacador)
+    - casa_jogador(getRetangulo(event, coordsCacador[0],coordsCacador[1]))
+    Pirata = tabuleiro.create_image(coordsCacador[0], coordsCacador[1] - 100, image=fotoCacador)
     coordsCacador = tabuleiro.coords(Pirata)
+    + casa_jogador(getRetangulo(event, coordsCacador[0],coordsCacador[1]))
+    fimDeJogo(getRetangulo(event, coordsCacador[0],coordsCacador[1]))
     print("Seta para cima pressionada")
+
 
 def downKey(event):
     global Pirata, coordsCacador
     tabuleiro.delete(Pirata)
-    Pirata = tabuleiro.create_image(coordsCacador[0],coordsCacador[1]+100, image=fotoCacador)
+    - casa_jogador(getRetangulo(event, coordsCacador[0],coordsCacador[1]))
+    Pirata = tabuleiro.create_image(coordsCacador[0], coordsCacador[1] + 100, image=fotoCacador)
     coordsCacador = tabuleiro.coords(Pirata)
+    + casa_jogador(getRetangulo(event, coordsCacador[0],coordsCacador[1]))
+    fimDeJogo(getRetangulo(event, coordsCacador[0],coordsCacador[1]))
     print("Seta para baixo pressionada")
 
 
 fotoCacador = PhotoImage(file="pirata.gif")
-Pirata = tabuleiro.create_image(60,370, image=fotoCacador)
+Pirata = tabuleiro.create_image(60, 370, image=fotoCacador)
 coordsCacador = tabuleiro.coords(Pirata)
++ casa_jogador(13)
 
 fotoWumpus = PhotoImage(file="wumpus_small.gif")
 fotoTesouro = PhotoImage(file="0.gif")
 
+
 def paraEsquerda(self):
-    if(coordsCacador[0] > 110):
+    if (coordsCacador[0] > 110):
         leftKey(self)
     else:
         print("Não é possível ir para a esquerda !!")
 
+
 def paraDireita(self):
-    if(coordsCacador[0] < 310):
+    if (coordsCacador[0] < 310):
         rightKey(self)
     else:
         print("Não é possível ir para a direita !!")
 
+
 def paraCima(self):
-    if(coordsCacador[1] > 110):
+    if (coordsCacador[1] > 110):
         upKey(self)
     else:
         print("Não é possível ir para cima !!")
 
+
 def paraBaixo(self):
-    if(coordsCacador[1] < 310):
+    if (coordsCacador[1] < 310):
         downKey(self)
     else:
         print("Não é possível ir para baixo !!")
 
+
 def getRetangulo(self, pirataX, pirataY):
-    if(pirataX == 60 and pirataY == 70):
+    if (pirataX == 60 and pirataY == 70):
         return 1
-    elif(pirataX == 160 and pirataY == 70):
+    elif (pirataX == 160 and pirataY == 70):
         return 2
-    elif(pirataX == 260 and pirataY == 70):
+    elif (pirataX == 260 and pirataY == 70):
         return 3
-    elif(pirataX == 360 and pirataY == 70):
+    elif (pirataX == 360 and pirataY == 70):
         return 4
-    elif(pirataX == 60 and pirataY == 170):
+    elif (pirataX == 60 and pirataY == 170):
         return 5
-    elif(pirataX == 160 and pirataY == 170):
+    elif (pirataX == 160 and pirataY == 170):
         return 6
-    elif(pirataX == 260 and pirataY == 170):
+    elif (pirataX == 260 and pirataY == 170):
         return 7
-    elif(pirataX == 360 and pirataY == 170):
+    elif (pirataX == 360 and pirataY == 170):
         return 8
-    elif(pirataX == 60 and pirataY == 270):
+    elif (pirataX == 60 and pirataY == 270):
         return 9
-    elif(pirataX == 160 and pirataY == 270):
+    elif (pirataX == 160 and pirataY == 270):
         return 10
-    elif(pirataX == 260 and pirataY == 270):
+    elif (pirataX == 260 and pirataY == 270):
         return 11
-    elif(pirataX == 360 and pirataY == 270):
+    elif (pirataX == 360 and pirataY == 270):
         return 12
-    elif(pirataX == 60 and pirataY == 370):
+    elif (pirataX == 60 and pirataY == 370):
         return 13
-    elif(pirataX == 160 and pirataY == 370):
+    elif (pirataX == 160 and pirataY == 370):
         return 14
-    elif(pirataX == 260 and pirataY == 370):
+    elif (pirataX == 260 and pirataY == 370):
         return 15
     else:
         return 16
 
+
+def fimDeJogo(casaJogador):
+    wumpus = pyDatalog.ask('tem_wumpus(X)').answers
+    poco = pyDatalog.ask('tem_poco(X)').answers
+    ouro = pyDatalog.ask('tem_ouro(X)')
+    if (wumpus[0][0] == casaJogador) or (poco[0][0] == casaJogador) or (poco[1][0] == casaJogador) or (
+        poco[2][0] == casaJogador) or ((ouro == None) and (casaJogador == 13)):
+        print("fim de jogo!")
+        return True
+    else:
+        return False
+
+
 def getLinhaColuna(self, idRet):
-    if(idRet == 1):
+    if (idRet == 1):
         pi = pyDatalog.ask('linha[1] == X')
         pi2 = pyDatalog.ask('coluna[1] == X')
-    elif(idRet == 2):
+    elif (idRet == 2):
         pi = pyDatalog.ask('linha[2] == X')
         pi2 = pyDatalog.ask('coluna[2] == X')
-    elif(idRet == 3):
+    elif (idRet == 3):
         pi = pyDatalog.ask('linha[3] == X')
         pi2 = pyDatalog.ask('coluna[3] == X')
-    elif(idRet == 4):
+    elif (idRet == 4):
         pi = pyDatalog.ask('linha[4] == X')
         pi2 = pyDatalog.ask('coluna[4] == X')
-    elif(idRet == 5):
+    elif (idRet == 5):
         pi = pyDatalog.ask('linha[5] == X')
         pi2 = pyDatalog.ask('coluna[5] == X')
-    elif(idRet == 6):
+    elif (idRet == 6):
         pi = pyDatalog.ask('linha[6] == X')
         pi2 = pyDatalog.ask('coluna[6] == X')
-    elif(idRet == 7):
+    elif (idRet == 7):
         pi = pyDatalog.ask('linha[7] == X')
         pi2 = pyDatalog.ask('coluna[7] == X')
-    elif(idRet == 8):
+    elif (idRet == 8):
         pi = pyDatalog.ask('linha[8] == X')
         pi2 = pyDatalog.ask('coluna[8] == X')
-    elif(idRet == 9):
+    elif (idRet == 9):
         pi = pyDatalog.ask('linha[9] == X')
         pi2 = pyDatalog.ask('coluna[9] == X')
-    elif(idRet == 10):
+    elif (idRet == 10):
         pi = pyDatalog.ask('linha[10] == X')
         pi2 = pyDatalog.ask('coluna[10] == X')
-    elif(idRet == 11):
+    elif (idRet == 11):
         pi = pyDatalog.ask('linha[11] == X')
         pi2 = pyDatalog.ask('coluna[11] == X')
-    elif(idRet == 12):
+    elif (idRet == 12):
         pi = pyDatalog.ask('linha[12] == X')
         pi2 = pyDatalog.ask('coluna[12] == X')
-    elif(idRet == 13):
+    elif (idRet == 13):
         pi = pyDatalog.ask('linha[13] == X')
         pi2 = pyDatalog.ask('coluna[13] == X')
-    elif(idRet == 14):
+    elif (idRet == 14):
         pi = pyDatalog.ask('linha[14] == X')
         pi2 = pyDatalog.ask('coluna[14] == X')
-    elif(idRet == 15):
+    elif (idRet == 15):
         pi = pyDatalog.ask('linha[15] == X')
         pi2 = pyDatalog.ask('coluna[15] == X')
     else:
@@ -351,38 +384,42 @@ def getLinhaColuna(self, idRet):
 
     return pi, pi2
 
+
 def bangCima(self):
     print("atirou para cima!")
     idRetangulo = getRetangulo(self, coordsCacador[0], coordsCacador[1])
     linhaColunaRet = getLinhaColuna(self, idRetangulo)
     print(linhaColunaRet[1])
 
+
 def bangBaixo(self):
     print("Atirou para baixo!")
 
+
 def bangEsquerda(self):
     print("Atirou para a esquerda!")
+
 
 def bangDireita(self):
     print("Atirou para a direita!")
 
 
-while(len(buracoRetangulo) < 3):
-    num_random = randint(1,16)
-    if((num_random != 13 and num_random != 14 and num_random != 9) and num_random not in buracoRetangulo):
+while (len(buracoRetangulo) < 3):
+    num_random = randint(1, 16)
+    if ((num_random != 13 and num_random != 14 and num_random != 9) and num_random not in buracoRetangulo):
         buracoRetangulo.append(num_random)
         + tem_poco(num_random)
 
-while(True):
-    num_random = randint(1,16)
-    if((num_random != 13 and num_random != 14 and num_random != 9) and num_random not in buracoRetangulo):
+while (True):
+    num_random = randint(1, 16)
+    if ((num_random != 13 and num_random != 14 and num_random != 9) and num_random not in buracoRetangulo):
         WumpusRetangulo = num_random
         + tem_wumpus(WumpusRetangulo)
         break
 
-while(True):
-    num_random = randint(1,16)
-    if((num_random != 13 and num_random != 14 and num_random != 9) and num_random not in buracoRetangulo and num_random != WumpusRetangulo):
+while (True):
+    num_random = randint(1, 16)
+    if (num_random != 13 and num_random != 14 and num_random != 9) and num_random not in buracoRetangulo and num_random != WumpusRetangulo:
         tesouroWumpus = num_random
         + tem_ouro(num_random)
         break
@@ -394,14 +431,14 @@ coordsWumpus = tabuleiro.coords(WumpusRetangulo)
 coordsTesouro = tabuleiro.coords(tesouroWumpus)
 
 tabuleiro.create_oval(coordsBuraco1[0], coordsBuraco1[1], coordsBuraco1[2], coordsBuraco1[3], fill="black")
-tabuleiro.create_text(coordsBuraco1[0]+50, coordsBuraco1[1]+50, text="SE FUDEU", fill="white")
+tabuleiro.create_text(coordsBuraco1[0] + 50, coordsBuraco1[1] + 50, text="SE FUDEU", fill="white")
 tabuleiro.create_oval(coordsBuraco2[0], coordsBuraco2[1], coordsBuraco2[2], coordsBuraco2[3], fill="black")
-tabuleiro.create_text(coordsBuraco2[0]+50, coordsBuraco2[1]+50, text="SE FUDEU", fill="white")
-tabuleiro.create_oval(coordsBuraco3[0], coordsBuraco3[1], coordsBuraco3[2], coordsBuraco3[3], fill="black", state=HIDDEN)
-tabuleiro.create_text(coordsBuraco3[0]+50, coordsBuraco3[1]+50, text="SE FUDEU", fill="white")
-tabuleiro.create_image(coordsWumpus[0]+50, coordsWumpus[1]+50, image=fotoWumpus)
-tabuleiro.create_image(coordsTesouro[0]+50, coordsTesouro[1]+50, image=fotoTesouro)
-
+tabuleiro.create_text(coordsBuraco2[0] + 50, coordsBuraco2[1] + 50, text="SE FUDEU", fill="white")
+tabuleiro.create_oval(coordsBuraco3[0], coordsBuraco3[1], coordsBuraco3[2], coordsBuraco3[3], fill="black",
+                      state=HIDDEN)
+tabuleiro.create_text(coordsBuraco3[0] + 50, coordsBuraco3[1] + 50, text="SE FUDEU", fill="white")
+tabuleiro.create_image(coordsWumpus[0] + 50, coordsWumpus[1] + 50, image=fotoWumpus)
+tabuleiro.create_image(coordsTesouro[0] + 50, coordsTesouro[1] + 50, image=fotoTesouro)
 
 tabuleiro.bind('<Left>', paraEsquerda)
 tabuleiro.bind('<Right>', paraDireita)
