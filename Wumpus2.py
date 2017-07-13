@@ -150,7 +150,7 @@ tem_brisa(16) <= tem_poco(12)
 tem_brisa(16) <= tem_poco(15)
 
 mainframe = Tk()
-mainframe.geometry("800x600+0+150")
+mainframe.geometry("800x500+0+150")
 mainframe.wm_title("Wumpus Game")
 
 frameTabuleiro = Frame(mainframe, height=410, width=410)
@@ -161,6 +161,9 @@ tabuleiro.pack(fill=BOTH, expand=YES)
 
 textoJogo = Text(mainframe, height=30, width=40, bg="black", fg="white")
 textoJogo.place(x=500, y=50)
+
+labelInfo = Label(mainframe, text="Game Info")
+labelInfo.place(x=500, y=30)
 
 janelaFim = Tk()
 janelaFim.geometry("180x120+350+300")
@@ -338,7 +341,7 @@ def Exit():
 
 
 def fimDeJogo(casaJogador):
-    global wumpusVivo, imgBuraco1, imgBuraco2, imgBuraco3, imgWumpus
+    global wumpusVivo, Pirata
     # if not(pyDatalog.ask('tem_wumpus(X)')==None) and not(pyDatalog.ask('tem_wumpus(X)')==None):
     wumpus = pyDatalog.ask('tem_wumpus(X)').answers
     poco = pyDatalog.ask('tem_poco(X)').answers
@@ -361,8 +364,9 @@ def fimDeJogo(casaJogador):
         botaoSim.place(x=30, y=70)
         botaoNao = Button(janelaFim, text="Não", command=Exit)
         botaoNao.place(x=100, y=70)
+        tabuleiro.delete(Pirata)
         desenhaObstaculos()
-        
+
 
 def fedorNaCasa(casaJogador):
     listaFedor = pyDatalog.ask('tem_fedor(X)').answers
@@ -576,5 +580,22 @@ tabuleiro.focus_set()
 
 tabuleiro.bind('<Button-1>', pegaOuro)
 tabuleiro.focus_set()
+
+def Instrucoes():
+    janelaInst = Tk()
+    janelaInst.geometry("500x400+350+300")
+    textoInst = Text(janelaInst, height=20, width=20)
+    textoInst.pack(fill=BOTH, expand=YES)
+    janelaInst.wm_title("Manual de Instruções")
+    textoInst.insert(END, "-Este é o jogo Wumpus, onde o objetivo do jogador é guiar o caçador \n até o tesouro escondido no tabuleiro e retornar o caçador para a sua   posição inicial após a obtenção do tesouro.\n\n")
+    textoInst.insert(END, "-Porém, o jogador deve tomar cuidado com o monstro Wumpus e os buracos  que estão escondidos no tabuleiro.Caso o caçador seja movimentado \n para onde estão estes obstáculos, o jogo irá acabar.\n\n")
+    textoInst.insert(END, "-Para identificar a aproximação do Wumpus ou dos buracos, a janela \n Game info ao lado do tabuleiro irá informar 'Brisa' quando o jogador   estiver próximo de um buraco ou 'Fedor' quando estiver próximo de um   Wumpus.Quando o caçador estiver na mesma casa que o Tesouro, irá\n aparecer 'Brilho'.\n\n")
+    textoInst.insert(END, "-Para movimentar o caçador(neste caso, um pirata), utilize as setas\n direcionais do seu teclado.É possível movimentar o pirata para cima,   para baixo, para esquerda e para a direita!\n\n")
+    textoInst.insert(END, "-O pirata tem apenas uma bala em sua arma, logo é capaz de atirar\n apenas uma vez. Para disparar um tiro, o jogador deve segurar Ctrl e   apertar a seta direcional respectiva a direção que ele queira atirar.  O jogador pode atigir o Wumpus se atirar na direção certa ou errar se  atirar em outro.\n\n")
+    textoInst.insert(END, "-Para pegar o tesouro, o jogador deve colocar o cursor do mouse sobre   o tabuleiro e pressionar o botão esquerdo do mesmo.Uma mensagem no\n Game Info irá informar se você realmente o pegou!")
+    textoInst.config(state=DISABLED)
+
+botaoInst = Button(mainframe, text="Ajuda", command=Instrucoes)
+botaoInst.place(x=725, y=20)
 
 mainloop()
