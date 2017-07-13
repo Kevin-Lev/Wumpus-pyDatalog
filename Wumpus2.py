@@ -1,6 +1,7 @@
 from tkinter import *
 from pyDatalog import pyDatalog
 from random import randint
+import os
 
 pyDatalog.create_terms('tem_poco, tem_brisa, tem_wumpus, tem_fedor, tem_ouro, tem_brilho')
 pyDatalog.create_terms('linha, coluna')
@@ -148,16 +149,6 @@ tem_brisa(15) <= tem_poco(16)
 tem_brisa(16) <= tem_poco(12)
 tem_brisa(16) <= tem_poco(15)
 
-# BASE PARA STATUS DO JOGO
-status['morreu'] == False
-(status['morreu'] == True) <= (casa_jogador(X) & tem_wumpus(X))
-(status['morreu'] == True) <= (casa_jogador(X) & tem_poco(X))
-status['venceu'] == False
-(status['venceu'] == True) <= (casa_jogador(13) & (status['pegou_ouro'] == True))
-status['fim_jogo'] == False
-(status['fim_jogo'] == True) <= (status['venceu'] == True)
-(status['fim_jogo'] == True) <= (status['morreu'] == True)
-
 mainframe = Tk()
 mainframe.geometry("800x600+0+150")
 mainframe.wm_title("Wumpus Game")
@@ -171,6 +162,10 @@ tabuleiro.pack(fill=BOTH, expand=YES)
 textoJogo = Text(mainframe, height=30, width=40, bg="black", fg="white")
 textoJogo.place(x=500, y=50)
 
+janelaFim = Tk()
+janelaFim.geometry("180x120+350+300")
+janelaFim.wm_title("Game Over")
+janelaFim.withdraw()
 
 buracoRetangulo = []
 coordsBuraco1 = []
@@ -183,34 +178,38 @@ coordsTesouro = []
 coordsCacador = []
 Pirata = {}
 linhaColunaRet = {}
-Bur1 = {}; Bur2 = {}; Bur3 = {}
-msgBur1 = {}; msgBur2 = {}; msgBur3 = {}
 
-def criaQuadradros():
-    # 1ª Linha
-    tabuleiro.create_rectangle(10, 10, 110, 110, fill="white")
-    tabuleiro.create_rectangle(110, 10, 210, 110, fill="white")
-    tabuleiro.create_rectangle(210, 10, 310, 110, fill="white")
-    tabuleiro.create_rectangle(310, 10, 410, 110, fill="white")
+# 1ª Linha
+tabuleiro.create_rectangle(10, 10, 110, 110, fill="white")
+tabuleiro.create_rectangle(110, 10, 210, 110, fill="white")
+tabuleiro.create_rectangle(210, 10, 310, 110, fill="white")
+tabuleiro.create_rectangle(310, 10, 410, 110, fill="white")
 
-    # 2ª Linha
-    tabuleiro.create_rectangle(10, 110, 110, 210, fill="white")
-    tabuleiro.create_rectangle(110, 110, 210, 210, fill="white")
-    tabuleiro.create_rectangle(210, 110, 310, 210, fill="white")
-    tabuleiro.create_rectangle(310, 110, 410, 210, fill="white")
+# 2ª Linha
+tabuleiro.create_rectangle(10, 110, 110, 210, fill="white")
+tabuleiro.create_rectangle(110, 110, 210, 210, fill="white")
+tabuleiro.create_rectangle(210, 110, 310, 210, fill="white")
+tabuleiro.create_rectangle(310, 110, 410, 210, fill="white")
 
-    # 3ª Linha
-    tabuleiro.create_rectangle(10, 210, 110, 310, fill="white")
-    tabuleiro.create_rectangle(110, 210, 210, 310, fill="white")
-    tabuleiro.create_rectangle(210, 210, 310, 310, fill="white")
-    tabuleiro.create_rectangle(310, 210, 410, 310, fill="white")
+# 3ª Linha
+tabuleiro.create_rectangle(10, 210, 110, 310, fill="white")
+tabuleiro.create_rectangle(110, 210, 210, 310, fill="white")
+tabuleiro.create_rectangle(210, 210, 310, 310, fill="white")
+tabuleiro.create_rectangle(310, 210, 410, 310, fill="white")
 
-    # 4ª Linha
-    tabuleiro.create_rectangle(10, 310, 110, 410, fill="white")
-    tabuleiro.create_rectangle(110, 310, 210, 410, fill="white")
-    tabuleiro.create_rectangle(210, 310, 310, 410, fill="white")
-    tabuleiro.create_rectangle(310, 310, 410, 410, fill="white")
+# 4ª Linha
+tabuleiro.create_rectangle(10, 310, 110, 410, fill="white")
+tabuleiro.create_rectangle(110, 310, 210, 410, fill="white")
+tabuleiro.create_rectangle(210, 310, 310, 410, fill="white")
+tabuleiro.create_rectangle(310, 310, 410, 410, fill="white")
 
+def verificaNovaCasa(event):
+    casaJogador = getRetangulo(event, coordsCacador[0], coordsCacador[1])
+    + casa_jogador(casaJogador)
+    fimDeJogo(casaJogador)
+    fedorNaCasa(casaJogador)
+    brisaNaCasa(casaJogador)
+    brilhoNaCasa(casaJogador)
 
 def leftKey(event):
     global Pirata, coordsCacador
@@ -218,8 +217,7 @@ def leftKey(event):
     - casa_jogador(getRetangulo(event, coordsCacador[0],coordsCacador[1]))
     Pirata = tabuleiro.create_image(coordsCacador[0] - 100, coordsCacador[1], image=fotoCacador)
     coordsCacador = tabuleiro.coords(Pirata)
-    + casa_jogador(getRetangulo(event, coordsCacador[0],coordsCacador[1]))
-    fimDeJogo(getRetangulo(event, coordsCacador[0],coordsCacador[1]))
+    verificaNovaCasa(event)
     print("Seta esquerda pressionada")
 
 
@@ -229,8 +227,7 @@ def rightKey(event):
     - casa_jogador(getRetangulo(event, coordsCacador[0],coordsCacador[1]))
     Pirata = tabuleiro.create_image(coordsCacador[0] + 100, coordsCacador[1], image=fotoCacador)
     coordsCacador = tabuleiro.coords(Pirata)
-    + casa_jogador(getRetangulo(event, coordsCacador[0],coordsCacador[1]))
-    fimDeJogo(getRetangulo(event, coordsCacador[0],coordsCacador[1]))
+    verificaNovaCasa(event)
     print("Seta direita pressionada")
 
 
@@ -240,8 +237,7 @@ def upKey(event):
     - casa_jogador(getRetangulo(event, coordsCacador[0],coordsCacador[1]))
     Pirata = tabuleiro.create_image(coordsCacador[0], coordsCacador[1] - 100, image=fotoCacador)
     coordsCacador = tabuleiro.coords(Pirata)
-    + casa_jogador(getRetangulo(event, coordsCacador[0],coordsCacador[1]))
-    fimDeJogo(getRetangulo(event, coordsCacador[0],coordsCacador[1]))
+    verificaNovaCasa(event)
     print("Seta para cima pressionada")
 
 
@@ -251,9 +247,17 @@ def downKey(event):
     - casa_jogador(getRetangulo(event, coordsCacador[0],coordsCacador[1]))
     Pirata = tabuleiro.create_image(coordsCacador[0], coordsCacador[1] + 100, image=fotoCacador)
     coordsCacador = tabuleiro.coords(Pirata)
-    + casa_jogador(getRetangulo(event, coordsCacador[0],coordsCacador[1]))
-    fimDeJogo(getRetangulo(event, coordsCacador[0],coordsCacador[1]))
+    verificaNovaCasa(event)
     print("Seta para baixo pressionada")
+
+
+fotoCacador = PhotoImage(file="pirata.gif")
+Pirata = tabuleiro.create_image(60, 370, image=fotoCacador)
+coordsCacador = tabuleiro.coords(Pirata)
++ casa_jogador(13)
+
+fotoWumpus = PhotoImage(file="wumpus_small.gif")
+fotoTesouro = PhotoImage(file="0.gif")
 
 
 def paraEsquerda(self):
@@ -318,6 +322,54 @@ def getRetangulo(self, pirataX, pirataY):
     else:
         return 16
 
+def Reset():
+    janelaFim.destroy()
+    mainframe.destroy()
+    os.system("python3.5 Wumpus2.py")
+
+def Exit():
+    janelaFim.destroy()
+    mainframe.destroy()
+
+def fimDeJogo(casaJogador):
+    global wumpusVivo
+    #if not(pyDatalog.ask('tem_wumpus(X)')==None) and not(pyDatalog.ask('tem_wumpus(X)')==None):
+    wumpus = pyDatalog.ask('tem_wumpus(X)').answers
+    poco = pyDatalog.ask('tem_poco(X)').answers
+    ouro = pyDatalog.ask('tem_ouro(X)')
+    if ((wumpus[0][0] == casaJogador) and wumpusVivo) or (poco[0][0] == casaJogador) or (poco[1][0] == casaJogador) or (
+        poco[2][0] == casaJogador) or ((ouro == None) and (casaJogador == 13)):
+        janelaFim.deiconify()
+        labelFim = Label(janelaFim, text="Fim de jogo!\n\nDeseja jogar novamente?")
+        labelFim.place(x=10,y=10)
+        botaoSim = Button(janelaFim, text="Sim", command=Reset)
+        botaoSim.place(x=30, y=70)
+        botaoNao = Button(janelaFim, text="Não", command=Exit)
+        botaoNao.place(x=100, y=70)
+        return True
+    else:
+        return False
+
+def fedorNaCasa(casaJogador):
+    listaFedor = pyDatalog.ask('tem_fedor(X)').answers
+    for i in listaFedor:
+        if i[0] == casaJogador:
+            print("Fedor")
+            return True
+    return False
+
+def brisaNaCasa(casaJogador):
+    listaBrisa = pyDatalog.ask('tem_brisa(X)').answers
+    for i in listaBrisa:
+        if i[0] == casaJogador:
+            print("Brisa")
+            return True
+    return False
+
+def brilhoNaCasa(casaJogador):
+    casaBrilho = pyDatalog.ask('tem_ouro(X)').answers
+    if(casaBrilho[0][0] == casaJogador):
+        print("Brilho")
 
 def getLinhaColuna(self, idRet):
     if (idRet == 1):
@@ -371,117 +423,116 @@ def getLinhaColuna(self, idRet):
 
     return pi, pi2
 
+tiros = 1
+wumpusVivo = True
+def atirarFlecha(self, casaJogador, direcao): # 0: esq; 1: cima; 2: dir; 3: baixo
+    global tiros, wumpusVivo
+    if(tiros > 0):
+        wumpus = pyDatalog.ask('tem_wumpus(X)').answers
+        linhaWumpus, colunaWumpus = getLinhaColuna(self, wumpus[0][0])
+        linhaJogador, colunaJogador = getLinhaColuna(self, casaJogador)
+        if direcao == 0:
+            if (linhaWumpus == linhaJogador) and (wumpus[0][0] < casaJogador):
+                print("Você matou o wumpus!")
+                - tem_wumpus(casaJogador)
+                wumpusVivo = False
+                tabuleiro.delete(imgWumpus)
+            else:
+                print("Você errou!")
+        elif direcao == 1:
+            if (colunaWumpus == colunaJogador) and (wumpus[0][0] < casaJogador):
+                print("Você matou")
+                - tem_wumpus(casaJogador)
+                wumpusVivo = False
+                tabuleiro.delete(imgWumpus)
+            else:
+                print("Você errou!")
+        elif direcao == 2:
+            if (linhaWumpus == linhaJogador) and (wumpus[0][0] > casaJogador):
+                print("Você matou o wumpus!")
+                - tem_wumpus(casaJogador)
+                wumpusVivo = False
+                tabuleiro.delete(imgWumpus)
+            else:
+                print("Você errou!")
+        else:
+            if (colunaWumpus == colunaJogador) and (wumpus[0][0] > casaJogador):
+                print("Você matou o wumpus!")
+                - tem_wumpus(casaJogador)
+                wumpusVivo = False
+                tabuleiro.delete(imgWumpus)
+            else:
+                print("Você errou!")
+        tiros = tiros - 1
+    else:
+        print("Suas balas acabaram!")
+
 
 def bangCima(self):
     print("atirou para cima!")
-    idRetangulo = getRetangulo(self, coordsCacador[0], coordsCacador[1])
-    linhaColunaRet = getLinhaColuna(self, idRetangulo)
-    print(linhaColunaRet[1])
-
+    casaJogador = getRetangulo(self, coordsCacador[0], coordsCacador[1])
+    atirarFlecha(self, casaJogador, 1)
 
 def bangBaixo(self):
     print("Atirou para baixo!")
+    casaJogador = getRetangulo(self, coordsCacador[0], coordsCacador[1])
+    atirarFlecha(self, casaJogador, 3)
 
 
 def bangEsquerda(self):
     print("Atirou para a esquerda!")
+    casaJogador = getRetangulo(self, coordsCacador[0], coordsCacador[1])
+    atirarFlecha(self, casaJogador, 0)
 
 
 def bangDireita(self):
     print("Atirou para a direita!")
+    casaJogador = getRetangulo(self, coordsCacador[0], coordsCacador[1])
+    atirarFlecha(self, casaJogador, 2)
 
 def pegaOuro(self):
     ouro = getRetangulo(self, coordsTesouro[0], coordsTesouro[1])
-    - tem_ouro(ouro)
-
-def posicionaObjetos():
-    while (len(buracoRetangulo) < 3):
-        print("entrei no while1")
-        num_random = randint(1, 16)
-        if ((num_random != 13 and num_random != 14 and num_random != 9) and num_random not in buracoRetangulo):
-            buracoRetangulo.append(num_random)
-            + tem_poco(num_random)
-            print(buracoRetangulo)
-
-    while (True):
-        num_random = randint(1, 16)
-        if ((num_random != 13 and num_random != 14 and num_random != 9) and num_random not in buracoRetangulo):
-            WumpusRetangulo = num_random
-            + tem_wumpus(WumpusRetangulo)
-            break
-
-    while (True):
-        num_random = randint(1, 16)
-        if (num_random != 13 and num_random != 14 and num_random != 9) and num_random not in buracoRetangulo and num_random != WumpusRetangulo:
-            tesouroWumpus = num_random
-            + tem_ouro(num_random)
-            break
-
-    coordsBuraco1 = tabuleiro.coords(buracoRetangulo[0])
-    coordsBuraco2 = tabuleiro.coords(buracoRetangulo[1])
-    coordsBuraco3 = tabuleiro.coords(buracoRetangulo[2])
-    coordsWumpus = tabuleiro.coords(WumpusRetangulo)
-    coordsTesouro = tabuleiro.coords(tesouroWumpus)
-
-    print(coordsBuraco1)
-
-    Bur1 = tabuleiro.create_oval(coordsBuraco1[0], coordsBuraco1[1], coordsBuraco1[2], coordsBuraco1[3], fill="black")
-    msgBur1 = tabuleiro.create_text(coordsBuraco1[0] + 50, coordsBuraco1[1] + 50, text="SE FUDEU", fill="white")
-    Bur2 = tabuleiro.create_oval(coordsBuraco2[0], coordsBuraco2[1], coordsBuraco2[2], coordsBuraco2[3], fill="black")
-    msgBur2 = tabuleiro.create_text(coordsBuraco2[0] + 50, coordsBuraco2[1] + 50, text="SE FUDEU", fill="white")
-    Bur3 = tabuleiro.create_oval(coordsBuraco3[0], coordsBuraco3[1], coordsBuraco3[2], coordsBuraco3[3], fill="black")
-    msgBur3 = tabuleiro.create_text(coordsBuraco3[0] + 50, coordsBuraco3[1] + 50, text="SE FUDEU", fill="white")
-    tabuleiro.create_image(coordsWumpus[0] + 50, coordsWumpus[1] + 50, image=fotoWumpus)
-    tabuleiro.create_image(coordsTesouro[0] + 50, coordsTesouro[1] + 50, image=fotoTesouro)
+    casaJogador = getRetangulo(self, coordsCacador[0], coordsCacador[1])
+    if(ouro == casaJogador):
+        print("Você pegou o ouro!")
+        - tem_ouro(casaJogador)
+        #APAGAR FOTO DO TESOURO
 
 
-def Reset():
-    global coordsCacador
-    
-    tabuleiro.delete(Bur1, msgBur1, Bur2, msgBur2, Bur3, msgBur3)
-    coordsCacador.clear()
-    buracoRetangulo.clear()
-    coordsBuraco1.clear()
-    coordsBuraco2.clear()
-    coordsBuraco3.clear()
-    coordsWumpus.clear()
-    coordsTesouro.clear()
-    criaQuadradros()
-    Pirata = tabuleiro.create_image(60, 370, image=fotoCacador)
-    coordsCacador = tabuleiro.coords(Pirata)
-    + casa_jogador(13)
-    posicionaObjetos()
+while (len(buracoRetangulo) < 3):
+    num_random = randint(1, 16)
+    if ((num_random != 13 and num_random != 14 and num_random != 9) and num_random not in buracoRetangulo):
+        buracoRetangulo.append(num_random)
+        + tem_poco(num_random)
 
-criaQuadradros()
+while (True):
+    num_random = randint(1, 16)
+    if ((num_random != 13 and num_random != 14 and num_random != 9) and num_random not in buracoRetangulo):
+        WumpusRetangulo = num_random
+        + tem_wumpus(WumpusRetangulo)
+        break
 
-fotoCacador = PhotoImage(file="pirata.gif")
-Pirata = tabuleiro.create_image(60, 370, image=fotoCacador)
-coordsCacador = tabuleiro.coords(Pirata)
-+ casa_jogador(13)
-fotoWumpus = PhotoImage(file="wumpus_small.gif")
-fotoTesouro = PhotoImage(file="0.gif")
+while (True):
+    num_random = randint(1, 16)
+    if (num_random != 13 and num_random != 14 and num_random != 9) and num_random not in buracoRetangulo and num_random != WumpusRetangulo:
+        tesouroWumpus = num_random
+        + tem_ouro(num_random)
+        break
 
-posicionaObjetos()
+coordsBuraco1 = tabuleiro.coords(buracoRetangulo[0])
+coordsBuraco2 = tabuleiro.coords(buracoRetangulo[1])
+coordsBuraco3 = tabuleiro.coords(buracoRetangulo[2])
+coordsWumpus = tabuleiro.coords(WumpusRetangulo)
+coordsTesouro = tabuleiro.coords(tesouroWumpus)
 
-def fimDeJogo(casaJogador):
-    wumpus = pyDatalog.ask('tem_wumpus(X)').answers
-    poco = pyDatalog.ask('tem_poco(X)').answers
-    ouro = pyDatalog.ask('tem_ouro(X)')
-    if (wumpus[0][0] == casaJogador) or (poco[0][0] == casaJogador) or (poco[1][0] == casaJogador) or (
-        poco[2][0] == casaJogador) or ((ouro == None) and (casaJogador == 13)):
-        #print("fim de jogo!")
-        janelaFim = Tk()
-        janelaFim.geometry("180x120+350+300")
-        janelaFim.wm_title("Game Over")
-        labelFim = Label(janelaFim, text="Fim de jogo!\n\nDeseja jogar novamente?")
-        labelFim.place(x=10,y=10)
-        botaoSim = Button(janelaFim, text="Sim", command=Reset)
-        botaoSim.place(x=30, y=70)
-        botaoNao = Button(janelaFim, text="Não")
-        botaoNao.place(x=100, y=70)
-        return True
-    else:
-        return False
+tabuleiro.create_oval(coordsBuraco1[0], coordsBuraco1[1], coordsBuraco1[2], coordsBuraco1[3], fill="black")
+tabuleiro.create_text(coordsBuraco1[0] + 50, coordsBuraco1[1] + 50, text="SE FUDEU", fill="white")
+tabuleiro.create_oval(coordsBuraco2[0], coordsBuraco2[1], coordsBuraco2[2], coordsBuraco2[3], fill="black")
+tabuleiro.create_text(coordsBuraco2[0] + 50, coordsBuraco2[1] + 50, text="SE FUDEU", fill="white")
+tabuleiro.create_oval(coordsBuraco3[0], coordsBuraco3[1], coordsBuraco3[2], coordsBuraco3[3], fill="black",state=HIDDEN)
+tabuleiro.create_text(coordsBuraco3[0] + 50, coordsBuraco3[1] + 50, text="SE FUDEU", fill="white")
+imgWumpus = tabuleiro.create_image(coordsWumpus[0] + 50, coordsWumpus[1] + 50, image=fotoWumpus)
+tabuleiro.create_image(coordsTesouro[0] + 50, coordsTesouro[1] + 50, image=fotoTesouro)
 
 tabuleiro.bind('<Left>', paraEsquerda)
 tabuleiro.bind('<Right>', paraDireita)
@@ -491,7 +542,7 @@ tabuleiro.bind('<Control-Key-Up>', bangCima)
 tabuleiro.bind('<Control-Key-Down>', bangBaixo)
 tabuleiro.bind('<Control-Key-Left>', bangEsquerda)
 tabuleiro.bind('<Control-Key-Right>', bangDireita)
-tabuleiro.bind('KP_Enter', pegaOuro)
+tabuleiro.bind('<KP_Enter>', pegaOuro)
 tabuleiro.focus_set()
 
 mainloop()

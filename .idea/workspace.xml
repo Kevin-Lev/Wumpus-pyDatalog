@@ -15,8 +15,8 @@
       <file leaf-file-name="Wumpus2.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Wumpus2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5478">
-              <caret line="407" column="20" lean-forward="true" selection-start-line="407" selection-start-column="20" selection-end-line="407" selection-end-column="20" />
+            <state relative-caret-position="231">
+              <caret line="443" column="41" lean-forward="true" selection-start-line="443" selection-start-column="41" selection-end-line="443" selection-end-column="41" />
               <folding>
                 <element signature="e#0#21#0" expanded="true" />
               </folding>
@@ -36,6 +36,8 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>WumpusRetangulo</find>
+      <find>fotoTesouro</find>
+      <find>ans</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -274,8 +276,8 @@
     <entry file="file://$PROJECT_DIR$/Logic.py" />
     <entry file="file://$PROJECT_DIR$/Wumpus2.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5478">
-          <caret line="407" column="20" lean-forward="true" selection-start-line="407" selection-start-column="20" selection-end-line="407" selection-end-column="20" />
+        <state relative-caret-position="231">
+          <caret line="443" column="41" lean-forward="true" selection-start-line="443" selection-start-column="41" selection-end-line="443" selection-end-column="41" />
           <folding>
             <element signature="e#0#21#0" expanded="true" />
           </folding>
