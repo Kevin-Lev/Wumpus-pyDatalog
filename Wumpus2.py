@@ -5,7 +5,7 @@ import os
 
 pyDatalog.create_terms('tem_poco, tem_brisa, tem_wumpus, tem_fedor, tem_ouro, tem_brilho')
 pyDatalog.create_terms('linha, coluna')
-pyDatalog.create_terms('casa_jogador, status')
+pyDatalog.create_terms('casa_jogador')
 pyDatalog.create_terms('X, Y')
 
 # BASE DE LINHAS
@@ -206,10 +206,11 @@ tabuleiro.create_rectangle(310, 310, 410, 410, fill="white")
 def verificaNovaCasa(event):
     casaJogador = getRetangulo(event, coordsCacador[0], coordsCacador[1])
     + casa_jogador(casaJogador)
-    fimDeJogo(casaJogador)
     fedorNaCasa(casaJogador)
     brisaNaCasa(casaJogador)
     brilhoNaCasa(casaJogador)
+    fimDeJogo(casaJogador)
+    textoJogo.insert(END, "\n- - - - - - - - -\n")
 
 
 def leftKey(event):
@@ -327,8 +328,8 @@ def getRetangulo(self, pirataX, pirataY):
 def Reset():
     janelaFim.destroy()
     mainframe.destroy()
-    # os.system("python3.5 Wumpus2.py")
-    os.system("python Wumpus2.py")
+    os.system("python3.5 Wumpus2.py")
+    #os.system("python Wumpus2.py")
 
 
 def Exit():
@@ -337,11 +338,10 @@ def Exit():
 
 
 def fimDeJogo(casaJogador):
-    global wumpusVivo
+    global wumpusVivo, imgBuraco1, imgBuraco2, imgBuraco3, imgWumpus
     # if not(pyDatalog.ask('tem_wumpus(X)')==None) and not(pyDatalog.ask('tem_wumpus(X)')==None):
     wumpus = pyDatalog.ask('tem_wumpus(X)').answers
     poco = pyDatalog.ask('tem_poco(X)').answers
-    ouro = pyDatalog.ask('tem_ouro(X)')
     if((pegouOuro == 1) and (casaJogador == 13)):
         janelaFim.wm_title("Você venceu!")
         janelaFim.deiconify()
@@ -361,16 +361,14 @@ def fimDeJogo(casaJogador):
         botaoSim.place(x=30, y=70)
         botaoNao = Button(janelaFim, text="Não", command=Exit)
         botaoNao.place(x=100, y=70)
-        return True
-    else:
-        return False
-
+        desenhaObstaculos()
+        
 
 def fedorNaCasa(casaJogador):
     listaFedor = pyDatalog.ask('tem_fedor(X)').answers
     for i in listaFedor:
         if i[0] == casaJogador:
-            print("Fedor")
+            textoJogo.insert(END, "Fedor! ")
             return True
     return False
 
@@ -379,7 +377,7 @@ def brisaNaCasa(casaJogador):
     listaBrisa = pyDatalog.ask('tem_brisa(X)').answers
     for i in listaBrisa:
         if i[0] == casaJogador:
-            print("Brisa")
+            textoJogo.insert(END, "Brisa! ")
             return True
     return False
 
@@ -389,7 +387,7 @@ def brilhoNaCasa(casaJogador):
     if pegouOuro == 0:
         casaBrilho = pyDatalog.ask('tem_ouro(X)').answers
         if (casaBrilho[0][0] == casaJogador):
-            print("Brilho")
+            textoJogo.insert(END, "Brilho! ")
 
 
 def getLinhaColuna(self, idRet):
@@ -457,61 +455,61 @@ def atirarFlecha(self, casaJogador, direcao):  # 0: esq; 1: cima; 2: dir; 3: bai
         linhaJogador, colunaJogador = getLinhaColuna(self, casaJogador)
         if direcao == 0:
             if (linhaWumpus == linhaJogador) and (wumpus[0][0] < casaJogador):
-                print("Você matou o wumpus!")
+                textoJogo.insert(END, "Você matou o wumpus!\n")
                 - tem_wumpus(casaJogador)
                 wumpusVivo = False
-                tabuleiro.delete(imgWumpus)
+                #tabuleiro.delete(imgWumpus)
             else:
-                print("Você errou!")
+                textoJogo.insert(END, "Você errou!\n")
         elif direcao == 1:
             if (colunaWumpus == colunaJogador) and (wumpus[0][0] < casaJogador):
-                print("Você matou")
+                textoJogo.insert(END, "Você matou o wumpus!\n")
                 - tem_wumpus(casaJogador)
                 wumpusVivo = False
-                tabuleiro.delete(imgWumpus)
+                #tabuleiro.delete(imgWumpus)
             else:
-                print("Você errou!")
+                textoJogo.insert(END, "Você errou!\n")
         elif direcao == 2:
             if (linhaWumpus == linhaJogador) and (wumpus[0][0] > casaJogador):
-                print("Você matou o wumpus!")
+                textoJogo.insert(END, "Você matou o wumpus!\n")
                 - tem_wumpus(casaJogador)
                 wumpusVivo = False
-                tabuleiro.delete(imgWumpus)
+                #tabuleiro.delete(imgWumpus)
             else:
-                print("Você errou!")
+                textoJogo.insert(END, "Você errou!\n")
         else:
             if (colunaWumpus == colunaJogador) and (wumpus[0][0] > casaJogador):
-                print("Você matou o wumpus!")
+                textoJogo.insert(END, "Você matou o wumpus!\n")
                 - tem_wumpus(casaJogador)
                 wumpusVivo = False
-                tabuleiro.delete(imgWumpus)
+                #tabuleiro.delete(imgWumpus)
             else:
-                print("Você errou!")
+                textoJogo.insert(END, "Você errou!\n")
         tiros = tiros - 1
     else:
-        print("Suas balas acabaram!")
+        textoJogo.insert(END, "Suas balas acabaram!\n")
 
 
 def bangCima(self):
-    print("atirou para cima!")
+    textoJogo.insert(END, "Atirou para cima! ")
     casaJogador = getRetangulo(self, coordsCacador[0], coordsCacador[1])
     atirarFlecha(self, casaJogador, 1)
 
 
 def bangBaixo(self):
-    print("Atirou para baixo!")
+    textoJogo.insert(END, "Atirou para baixo! ")
     casaJogador = getRetangulo(self, coordsCacador[0], coordsCacador[1])
     atirarFlecha(self, casaJogador, 3)
 
 
 def bangEsquerda(self):
-    print("Atirou para a esquerda!")
+    textoJogo.insert(END, "Atirou para a esquerda! ")
     casaJogador = getRetangulo(self, coordsCacador[0], coordsCacador[1])
     atirarFlecha(self, casaJogador, 0)
 
 
 def bangDireita(self):
-    print("Atirou para a direita!")
+    textoJogo.insert(END, "Atirou para a direita! ")
     casaJogador = getRetangulo(self, coordsCacador[0], coordsCacador[1])
     atirarFlecha(self, casaJogador, 2)
 
@@ -522,10 +520,9 @@ def pegaOuro(self):
         ouro = pyDatalog.ask('tem_ouro(X)').answers
         casaJogador = getRetangulo(self, coordsCacador[0], coordsCacador[1])
         if (ouro[0][0] == casaJogador):
-            print("Você pegou o ouro!")
+            textoJogo.insert(END, "Você pegou o ouro!\n")
             - tem_ouro(casaJogador)
             pegouOuro = 1
-            # APAGAR FOTO DO TESOURO
 
 
 while (len(buracoRetangulo) < 3):
@@ -555,14 +552,17 @@ coordsBuraco3 = tabuleiro.coords(buracoRetangulo[2])
 coordsWumpus = tabuleiro.coords(WumpusRetangulo)
 coordsTesouro = tabuleiro.coords(tesouroWumpus)
 
-tabuleiro.create_oval(coordsBuraco1[0], coordsBuraco1[1], coordsBuraco1[2], coordsBuraco1[3], fill="black")
-tabuleiro.create_text(coordsBuraco1[0] + 50, coordsBuraco1[1] + 50, text="SE FUDEU", fill="white")
-tabuleiro.create_oval(coordsBuraco2[0], coordsBuraco2[1], coordsBuraco2[2], coordsBuraco2[3], fill="black")
-tabuleiro.create_text(coordsBuraco2[0] + 50, coordsBuraco2[1] + 50, text="SE FUDEU", fill="white")
-tabuleiro.create_oval(coordsBuraco3[0], coordsBuraco3[1], coordsBuraco3[2], coordsBuraco3[3], fill="black")
-tabuleiro.create_text(coordsBuraco3[0] + 50, coordsBuraco3[1] + 50, text="SE FUDEU", fill="white")
-imgWumpus = tabuleiro.create_image(coordsWumpus[0] + 50, coordsWumpus[1] + 50, image=fotoWumpus)
-tabuleiro.create_image(coordsTesouro[0] + 50, coordsTesouro[1] + 50, image=fotoTesouro)
+def desenhaObstaculos():
+    global wumpusVivo
+    tabuleiro.create_oval(coordsBuraco1[0], coordsBuraco1[1], coordsBuraco1[2], coordsBuraco1[3], fill="black")
+    tabuleiro.create_text(coordsBuraco1[0] + 50, coordsBuraco1[1] + 50, text="BURACO", fill="white")
+    tabuleiro.create_oval(coordsBuraco2[0], coordsBuraco2[1], coordsBuraco2[2], coordsBuraco2[3], fill="black")
+    tabuleiro.create_text(coordsBuraco2[0] + 50, coordsBuraco2[1] + 50, text="BURACO", fill="white")
+    tabuleiro.create_oval(coordsBuraco3[0], coordsBuraco3[1], coordsBuraco3[2], coordsBuraco3[3], fill="black")
+    tabuleiro.create_text(coordsBuraco3[0] + 50, coordsBuraco3[1] + 50, text="BURACO", fill="white")
+    if wumpusVivo == True:
+        tabuleiro.create_image(coordsWumpus[0] + 50, coordsWumpus[1] + 50, image=fotoWumpus)
+        tabuleiro.create_image(coordsTesouro[0] + 50, coordsTesouro[1] + 50, image=fotoTesouro)
 
 tabuleiro.bind('<Left>', paraEsquerda)
 tabuleiro.bind('<Right>', paraDireita)
