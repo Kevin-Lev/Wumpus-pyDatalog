@@ -649,23 +649,23 @@ listaAux = pyDatalog.ask('tem_brisa(X)').answers
 for i in listaAux:
     listaBrisa.append(i[0])
 listaVisitados = []
-casaAgente = {}
+casaAgente = 13
 
 def IA(self):
     global listaWumpus, listaFedor, listaPoco, listaPocoCtz, listaBrisa, listaVisitados, wumpusVivo, pegouOuro, casaAgente, coordsCacador
+    casaBrilho = pyDatalog.ask('tem_ouro(X)').answers
     while not fimDeJogo(casaAgente):
         casaAgente = getRetangulo(self, coordsCacador[0], coordsCacador[1])
         listaAux = []
-        casaBrilho = pyDatalog.ask('tem_ouro(X)').answers
         listaVisitados.append(casaAgente)
-        if casaBrilho == casaAgente:
+        if casaBrilho[0][0] == casaAgente:
             pegaOuro(self)
         listaMovPossiveis = movimentosPossiveis(casaAgente)
         if pegouOuro == 0:
             if (wumpusVivo is True) and (len(listaWumpus) > 0):
                 if casaAgente in listaFedor:
                     for mov in listaMovPossiveis:
-                        if mov not in listaVisitados:
+                        if (mov not in listaVisitados) and (len(listaWumpus) > 0):
                             if mov in listaWumpus:
                                 listaWumpus.clear()
                                 linhaWumpus, colunaWumpus = getLinhaColuna(self, mov)
@@ -690,15 +690,19 @@ def IA(self):
                         else:
                             listaPoco.append(mov)
             for casa in listaMovPossiveis:
-                if (casa not in listaWumpus) and (casa not in listaPoco) and (casa not in listaVisitados):
+                if (casa not in listaWumpus) and (casa not in listaPoco) and (casa not in listaPocoCtz) and (casa not in listaVisitados):
                     listaAux.append((casa, 10))
-                elif (casa not in listaWumpus) and (casa not in listaPoco):
+                elif (casa not in listaWumpus) and (casa not in listaPoco) and (casa not in listaPocoCtz):
                     listaAux.append((casa, 7))
-                else:
+                elif (casa not in listaWumpus) and (casa not in listaPoco):
                     listaAux.append((casa, 5))
+                else:
+                    listaAux.append((casa, 3))
             listaAux.sort(key=itemgetter(1), reverse=True)
             if listaAux[0][1] is not 10:
-                random.shuffle(listaAux)
+                num = random.randint(0,1)
+                if num == 1:
+                    random.shuffle(listaAux)
             if listaAux[0][0] == (casaAgente + 1):
                 paraDireita(self)
             elif listaAux[0][0] == (casaAgente + 4):
@@ -708,7 +712,7 @@ def IA(self):
             else:
                 paraCima(self)
         else:
-            movimento = listaVisitados[len(listaVisitados)]
+            movimento = listaVisitados[len(listaVisitados)-1]
             listaVisitados.remove(movimento)
             if movimento == (casaAgente + 1):
                 paraDireita(self)
