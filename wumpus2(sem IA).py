@@ -1,10 +1,7 @@
 from tkinter import *
 from pyDatalog import pyDatalog
 from random import randint
-import random
-import time
 import os
-from operator import itemgetter
 
 pyDatalog.create_terms('tem_poco, tem_brisa, tem_wumpus, tem_fedor, tem_ouro, tem_brilho')
 pyDatalog.create_terms('linha, coluna')
@@ -334,7 +331,7 @@ def getRetangulo(self, pirataX, pirataY):
 def Reset():
     janelaFim.destroy()
     mainframe.destroy()
-    os.system("python3.5 Wumpus2.py")
+    os.system("python3.5 wumpus2\(sem\ IA\).py")
     #os.system("python Wumpus2.py")
 
 
@@ -357,7 +354,6 @@ def fimDeJogo(casaJogador):
         botaoSim.place(x=30, y=70)
         botaoNao = Button(janelaFim, text="Não", command=Exit)
         botaoNao.place(x=100, y=70)
-        return True
     if ((wumpus[0][0] == casaJogador) and wumpusVivo) or (poco[0][0] == casaJogador) or (poco[1][0] == casaJogador) or (
                 poco[2][0] == casaJogador):
         janelaFim.wm_title("Game Over")
@@ -370,8 +366,6 @@ def fimDeJogo(casaJogador):
         botaoNao.place(x=100, y=70)
         tabuleiro.delete(Pirata)
         desenhaObstaculos()
-        return True
-    return False
 
 
 def fedorNaCasa(casaJogador):
@@ -523,17 +517,16 @@ def bangDireita(self):
     casaJogador = getRetangulo(self, coordsCacador[0], coordsCacador[1])
     atirarFlecha(self, casaJogador, 2)
 
-pegouOuro = False
+pegouOuro = 0
 def pegaOuro(self):
     global pegouOuro
-    if pegouOuro is False:
+    if(pegouOuro == 0):
         ouro = pyDatalog.ask('tem_ouro(X)').answers
         casaJogador = getRetangulo(self, coordsCacador[0], coordsCacador[1])
-        if ouro[0][0] == casaJogador:
+        if (ouro[0][0] == casaJogador):
             textoJogo.insert(END, "Você pegou o ouro!\n")
-            print("PEGOU OURO")
             - tem_ouro(casaJogador)
-            pegouOuro = True
+            pegouOuro = 1
 
 
 while (len(buracoRetangulo) < 3):
@@ -551,7 +544,8 @@ while (True):
 
 while (True):
     num_random = randint(1, 16)
-    if (num_random != 13 and num_random != 14 and num_random != 9) and num_random not in buracoRetangulo and num_random != WumpusRetangulo:
+    if (
+                num_random != 13 and num_random != 14 and num_random != 9) and num_random not in buracoRetangulo and num_random != WumpusRetangulo:
         tesouroWumpus = num_random
         + tem_ouro(num_random)
         break
@@ -563,16 +557,30 @@ coordsWumpus = tabuleiro.coords(WumpusRetangulo)
 coordsTesouro = tabuleiro.coords(tesouroWumpus)
 
 def desenhaObstaculos():
-    global wumpusVivo, coordsCacador
+    global wumpusVivo
     tabuleiro.create_oval(coordsBuraco1[0], coordsBuraco1[1], coordsBuraco1[2], coordsBuraco1[3], fill="black")
     tabuleiro.create_text(coordsBuraco1[0] + 50, coordsBuraco1[1] + 50, text="BURACO", fill="white")
     tabuleiro.create_oval(coordsBuraco2[0], coordsBuraco2[1], coordsBuraco2[2], coordsBuraco2[3], fill="black")
     tabuleiro.create_text(coordsBuraco2[0] + 50, coordsBuraco2[1] + 50, text="BURACO", fill="white")
     tabuleiro.create_oval(coordsBuraco3[0], coordsBuraco3[1], coordsBuraco3[2], coordsBuraco3[3], fill="black")
     tabuleiro.create_text(coordsBuraco3[0] + 50, coordsBuraco3[1] + 50, text="BURACO", fill="white")
-    if wumpusVivo is True:
+    if wumpusVivo == True:
         tabuleiro.create_image(coordsWumpus[0] + 50, coordsWumpus[1] + 50, image=fotoWumpus)
-    tabuleiro.create_image(coordsTesouro[0] + 50, coordsTesouro[1] + 50, image=fotoTesouro)
+        tabuleiro.create_image(coordsTesouro[0] + 50, coordsTesouro[1] + 50, image=fotoTesouro)
+
+def Player():
+    tabuleiro.bind('<Left>', paraEsquerda)
+    tabuleiro.bind('<Right>', paraDireita)
+    tabuleiro.bind('<Up>', paraCima)
+    tabuleiro.bind('<Down>', paraBaixo)
+    tabuleiro.bind('<Control-Key-Up>', bangCima)
+    tabuleiro.bind('<Control-Key-Down>', bangBaixo)
+    tabuleiro.bind('<Control-Key-Left>', bangEsquerda)
+    tabuleiro.bind('<Control-Key-Right>', bangDireita)
+    tabuleiro.focus_set()
+
+    tabuleiro.bind('<Button-1>', pegaOuro)
+    tabuleiro.focus_set()
 
 
 def Instrucoes():
@@ -589,224 +597,14 @@ def Instrucoes():
     textoInst.insert(END, "-Para pegar o tesouro, o jogador deve colocar o cursor do mouse sobre   o tabuleiro e pressionar o botão esquerdo do mesmo.Uma mensagem no\n Game Info irá informar se você realmente o pegou!")
     textoInst.config(state=DISABLED)
 
+
 botaoInst = Button(mainframe, text="Ajuda", command=Instrucoes)
 botaoInst.place(x=725, y=20)
-
-def movimentosPossiveis(casaJogador):
-    if casaJogador == 1:
-        return 2, 5
-    elif casaJogador == 2:
-        return 1, 3, 6
-    elif casaJogador == 3:
-        return 2, 4, 7
-    elif casaJogador == 4:
-        return 3, 8
-    elif casaJogador == 5:
-        return 1, 6, 9
-    elif casaJogador == 6:
-        return 2, 5, 7, 10
-    elif casaJogador == 7:
-        return 3, 6, 8, 11
-    elif casaJogador == 8:
-        return 4, 7, 12
-    elif casaJogador == 9:
-        return 5, 10, 13
-    elif casaJogador == 10:
-        return 6, 9, 11, 14
-    elif casaJogador == 11:
-        return 7, 10, 12, 15
-    elif casaJogador == 12:
-        return 8, 11, 16
-    elif casaJogador == 13:
-        return 9, 14
-    elif casaJogador == 14:
-        return 10, 13, 15
-    elif casaJogador == 15:
-        return 11, 14, 16
-    else:
-        return 12, 15
-
-listaAux = []
-listaWumpus = []
-listaWumpusCtz = []
-listaFedor = []
-listaAux = pyDatalog.ask('tem_fedor(X)').answers
-for i in listaAux:
-    listaFedor.append(i[0])
-listaPoco = []
-listaPocoCtz = []
-listaBrisa = []
-listaAux = pyDatalog.ask('tem_brisa(X)').answers
-for i in listaAux:
-    listaBrisa.append(i[0])
-listaVisitados = []
-
-def IA (self):
-    global listaWumpus, listaWumpusCtz, listaFedor, listaPoco, listaPocoCtz, listaBrisa, listaVisitados, wumpusVivo, pegouOuro, coordsCacador
-    atirei = False
-    casaBrilho = pyDatalog.ask('tem_ouro(X)').answers[0][0]
-    casaAnterior = 13
-    casaAgente = 13
-
-    listaMovPossiveis = movimentosPossiveis(casaAgente)
-    num = random.randint(0, 1)
-    if listaMovPossiveis[num] == (casaAgente - 4):
-        paraCima(self)
-    elif listaMovPossiveis[num] == (casaAgente + 1):
-        paraDireita(self)
-    listaVisitados.append(13)
-    casaAgente = getRetangulo(self, coordsCacador[0], coordsCacador[1])
-
-    while True:
-        time.sleep(5)
-        listaAcao = []
-        listaMov = []
-        listaMovPossiveis = movimentosPossiveis(casaAgente)
-        if casaAgente == casaBrilho:
-            pegaOuro(self)
-        if (casaAgente in listaFedor) and (len(listaWumpusCtz) == 0) and (wumpusVivo is True):
-            for casa in listaMovPossiveis:
-                if casa not in listaVisitados:
-                    if casa not in listaWumpus:
-                        listaWumpus.append(casa)
-                    elif casa not in listaWumpusCtz:
-                        listaWumpusCtz.append(casa)
-            listaAcao.append(casaAnterior)
-        elif (casaAgente in listaFedor) and (len(listaWumpusCtz) > 0) and (atirei is False) and (wumpusVivo is True):
-            linhaWumpus, colunaWumpus = getLinhaColuna(self, listaWumpusCtz[0])
-            linhaJogador, colunaJogador = getLinhaColuna(self, casaAgente)
-            if linhaWumpus == linhaJogador:
-                if casaAgente > listaWumpusCtz[0]:
-                    bangEsquerda(self)
-                    atirei = True
-                    print("TIRO")
-                else:
-                    bangDireita(self)
-                    atirei = True
-                    print("TIRO")
-            elif colunaWumpus == colunaJogador:
-                if casaAgente > listaWumpusCtz[0]:
-                    bangCima(self)
-                    atirei = True
-                    print("TIRO")
-                else:
-                    bangBaixo(self)
-                    atirei = True
-                    print("TIRO")
-        if (casaAgente in listaBrisa) and (len(listaPocoCtz) < 3):
-            for casa in listaMovPossiveis:
-                if casa not in listaVisitados:
-                    if casa not in listaPoco:
-                        listaPoco.append(casa)
-                    elif casa not in listaPocoCtz:
-                        listaPocoCtz.append(casa)
-            listaAcao.append(casaAnterior)
-        if pegouOuro is True:
-            listaVisitados.reverse()
-            while len(listaVisitados) > 0:
-                acao = listaVisitados[0]
-                listaVisitados.remove(acao)
-                if acao == (casaAgente - 1):
-                    paraEsquerda(self)
-                elif acao == (casaAgente - 4):
-                    paraCima(self)
-                elif acao == (casaAgente + 1):
-                    paraDireita(self)
-                elif acao == (casaAgente + 4):
-                    paraBaixo(self)
-        else:
-            for mov in listaMovPossiveis:
-                if wumpusVivo is True:
-                    if (len(listaWumpusCtz) > 0) and (len(listaPocoCtz) >= 3):
-                        if (mov not in listaWumpusCtz) and (mov not in listaPocoCtz):
-                            listaMov.append(mov)
-                    elif (len(listaWumpusCtz) > 0) and (len(listaPocoCtz) < 3):
-                        if (mov not in listaWumpusCtz) and (mov not in listaPoco):
-                            listaMov.append(mov)
-                    elif (len(listaWumpusCtz) == 0) and (len(listaPocoCtz) >= 3):
-                        if (mov not in listaWumpus) and (mov not in listaPocoCtz):
-                            listaMov.append(mov)
-                    else:
-                        if (mov not in listaWumpus) and (mov not in listaPoco):
-                            listaMov.append(mov)
-                    if len(listaMov) == 0:
-                        listaMov.append(listaMovPossiveis[random.randint(0, len(listaMovPossiveis)-1)])
-                else:
-                    if len(listaPocoCtz) >= 3:
-                        if mov not in listaPocoCtz:
-                            listaMov.append(mov)
-                    elif len(listaPocoCtz) < 3:
-                        if mov not in listaPoco:
-                            listaMov.append(mov)
-                    elif len(listaPocoCtz) >= 3:
-                        if mov not in listaPocoCtz:
-                            listaMov.append(mov)
-                    else:
-                        if mov not in listaPoco:
-                            listaMov.append(mov)
-                    if len(listaMov) == 0:
-                        listaMov.append(listaMovPossiveis[random.randint(0,len(listaMovPossiveis)-1)])
-            if len(listaAcao) == 0:
-                for mov in listaMov:
-                    if mov not in listaVisitados:
-                        listaAcao.append(mov)
-                if len(listaAcao) > 0:
-                    random.shuffle(listaAcao)
-                    if listaAcao[0] == (casaAgente - 1):
-                        paraEsquerda(self)
-                    elif listaAcao[0] == (casaAgente - 4):
-                        paraCima(self)
-                    elif listaAcao[0] == (casaAgente + 1):
-                        paraDireita(self)
-                    elif listaAcao[0] == (casaAgente + 4):
-                        paraBaixo(self)
-                else:
-                    random.shuffle(listaMov)
-                    if listaMov[0] == (casaAgente - 1):
-                        paraEsquerda(self)
-                    elif listaMov[0] == (casaAgente - 4):
-                        paraCima(self)
-                    elif listaMov[0] == (casaAgente + 1):
-                        paraDireita(self)
-                    elif listaMov[0] == (casaAgente + 4):
-                        paraBaixo(self)
-            else:
-                if listaAcao[0] == (casaAgente - 1):
-                    paraEsquerda(self)
-                elif listaAcao[0] == (casaAgente - 4):
-                    paraCima(self)
-                elif listaAcao[0] == (casaAgente + 1):
-                    paraDireita(self)
-                elif listaAcao[0] == (casaAgente + 4):
-                    paraBaixo(self)
-        listaVisitados.append(casaAgente)
-        casaAnterior = int(casaAgente)
-        casaAgente = getRetangulo(self, coordsCacador[0], coordsCacador[1])
-        if fimDeJogo(casaAgente):
-            break
-
-def Player():
-    tabuleiro.bind('<Left>', paraEsquerda)
-    tabuleiro.bind('<Right>', paraDireita)
-    tabuleiro.bind('<Up>', paraCima)
-    tabuleiro.bind('<Down>', paraBaixo)
-    tabuleiro.bind('<Control-Key-Up>', bangCima)
-    tabuleiro.bind('<Control-Key-Down>', bangBaixo)
-    tabuleiro.bind('<Control-Key-Left>', bangEsquerda)
-    tabuleiro.bind('<Control-Key-Right>', bangDireita)
-    tabuleiro.focus_set()
-
-    tabuleiro.bind('<Button-1>', pegaOuro)
-    tabuleiro.focus_set()
-
-def IA1():
-    IA(mainframe)
 
 botaoPlayer = Button(mainframe, text="Jogador", command=Player)
 botaoPlayer.place(x=50, y=20)
 
-botaoIA = Button(mainframe, text="IA", command=IA1, width=5)
+botaoIA = Button(mainframe, text="IA", command=IA2, width=5)
 botaoIA.place(x=405, y=20)
-
 
 mainloop()
