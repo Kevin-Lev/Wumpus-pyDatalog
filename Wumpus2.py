@@ -183,6 +183,7 @@ coordsTesouro = []
 coordsCacador = []
 Pirata = {}
 linhaColunaRet = {}
+fim = False
 
 # 1ª Linha
 tabuleiro.create_rectangle(10, 10, 110, 110, fill="white")
@@ -334,7 +335,7 @@ def getRetangulo(self, pirataX, pirataY):
 def Reset():
     janelaFim.destroy()
     mainframe.destroy()
-    os.system("python3.5 Wumpus2.py")
+    os.system("python3.5 Wumpus3.py")
     #os.system("python Wumpus2.py")
 
 
@@ -626,164 +627,254 @@ def movimentosPossiveis(casaJogador):
     else:
         return 12, 15
 
-listaAux = []
-listaWumpus = []
-listaWumpusCtz = []
-listaFedor = []
-listaAux = pyDatalog.ask('tem_fedor(X)').answers
-for i in listaAux:
-    listaFedor.append(i[0])
-listaPoco = []
-listaPocoCtz = []
-listaBrisa = []
-listaAux = pyDatalog.ask('tem_brisa(X)').answers
-for i in listaAux:
-    listaBrisa.append(i[0])
+
+class Visitados:
+     def __init__(self):
+         self.casaVisitada = 13
+         self.movimentoVolta = None            # cima, baixo, esquerda, direita (valores 1,2,3,4 respectivamente)
+         #self.anterior = 13
+
+     def getAnterior(self):
+         return self.anterior
+     def setAnterior(self, anterior):
+         self.anterior = anterior
+     def getcasaVisitada(self):
+         return self.casaVisitada
+     def setcasaVisitada(self, casa):
+         self.casaVisitada = casa
+     def getmovimentoVolta(self):
+         return self.movimentoVolta
+     def setmovimentoVolta(self, volta):
+         self.movimentoVolta = volta
+
+#movimenta o pirata para cima, baixo, esquerda ou direita
+
+casasFedidas = []
+casasBrisosas = []
 listaVisitados = []
+VisitadosAnterior = []
+casaAtual = Visitados()
 
-def IA (self):
-    global listaWumpus, listaWumpusCtz, listaFedor, listaPoco, listaPocoCtz, listaBrisa, listaVisitados, wumpusVivo, pegouOuro, coordsCacador
-    atirei = False
-    casaBrilho = pyDatalog.ask('tem_ouro(X)').answers[0][0]
-    casaAnterior = 13
-    casaAgente = 13
 
-    listaMovPossiveis = movimentosPossiveis(casaAgente)
-    num = random.randint(0, 1)
-    if listaMovPossiveis[num] == (casaAgente - 4):
+def anteriorOuro(self, VisitadosAnterior, i): # Quando pega o ouro, realiza todo o movimento percorrido até então pra voltar
+    print(VisitadosAnterior)
+    if(VisitadosAnterior[i] == 2):
+        paraBaixo(self)
+    elif(VisitadosAnterior == 1):
         paraCima(self)
-    elif listaMovPossiveis[num] == (casaAgente + 1):
+    elif(VisitadosAnterior[i] == 4):
         paraDireita(self)
-    listaVisitados.append(13)
-    casaAgente = getRetangulo(self, coordsCacador[0], coordsCacador[1])
+    elif(VisitadosAnterior[i] == 3):
+        paraEsquerda(self)
+
+    tabuleiro.update()
+
+
+def movimentaAnterior(self): # Volta pra casa anterior
+    global casaAtual, listaVisitados, VisitadosAnterior
+    print("movimentei pra casa anterior!!")
+    time.sleep(1)
+    casaAtual.setAnterior(casaAtual.getcasaVisitada())
+    if(casaAtual.getmovimentoVolta() == 1):
+        casaAtual.setcasaVisitada(casaAtual.getcasaVisitada()-4)
+        casaAtual.setmovimentoVolta(2)
+        VisitadosAnterior.insert(len(VisitadosAnterior), 2)
+        paraCima(self)
+    elif(casaAtual.getmovimentoVolta() == 2):
+        casaAtual.setcasaVisitada(casaAtual.getcasaVisitada()+4)
+        casaAtual.setmovimentoVolta(1)
+        VisitadosAnterior.insert(len(VisitadosAnterior), 1)
+        paraBaixo(self)
+    elif(casaAtual.getmovimentoVolta() == 3):
+        casaAtual.setcasaVisitada(casaAtual.getcasaVisitada()-1)
+        casaAtual.setmovimentoVolta(4)
+        VisitadosAnterior.insert(len(VisitadosAnterior), 4)
+        paraEsquerda(self)
+    elif(casaAtual.getmovimentoVolta() == 4):
+        casaAtual.setcasaVisitada(casaAtual.getcasaVisitada()+1)
+        casaAtual.setmovimentoVolta(3)
+        VisitadosAnterior.insert(len(VisitadosAnterior), 3)
+        paraDireita(self)
+
+    listaVisitados.append(casaAtual.getcasaVisitada())
+    print(VisitadosAnterior)
+    tabuleiro.update()
+
+def movimentaAleatorio(self): # Movimenta aleatoriamente o pirata, em casos da IA entrar em loop eterno ou ficar cercada de obstaculos
+    time.sleep(2)
+    num = random.choice([1,2,3,4])
+    if(num == 1):
+        paraCima(self)
+    elif(num == 2):
+        paraBaixo(self)
+    elif(num == 3):
+        paraEsquerda(self)
+    elif(num == 4):
+        paraDireita(self)
+
+def movimentaProximo(self, movimentosPossivel): # Realiza um movimento possivel para a proxima casa
+    global listaVisitados, VisitadosAnterior, casaAtual
+    tanaLista = False
+    limite = 1
+    print("movimentei pra próxima casa!!")
+    print("MovimentosPossivel: " + str(movimentosPossivel))
+    time.sleep(2)
+    num = randint(0, len(movimentosPossivel)-1)
+    while((movimentosPossivel[num] in casasFedidas) or (movimentosPossivel[num] in casasBrisosas)):
+        if(limite > 20):
+            print("QUEBREI ESSE WHILE")
+            movimentaAleatorio(self)
+            break
+        print("ESTOU NO WHILE!!")
+        num = randint(0, len(movimentosPossivel)-1)
+        limite = limite + 1
+
+    casaAtual.setAnterior(casaAtual.getcasaVisitada())
+    if(movimentosPossivel[num] == casaAtual.getcasaVisitada()-4):
+        casaAtual.setcasaVisitada(casaAtual.getcasaVisitada()-4)
+        casaAtual.setmovimentoVolta(2)
+        VisitadosAnterior.insert(len(VisitadosAnterior), 2)
+        paraCima(self)
+    elif(movimentosPossivel[num] == casaAtual.getcasaVisitada()+4):
+        casaAtual.setcasaVisitada(casaAtual.getcasaVisitada()+4)
+        casaAtual.setmovimentoVolta(1)
+        VisitadosAnterior.insert(len(VisitadosAnterior), 1)
+        paraBaixo(self)
+    elif(movimentosPossivel[num] == casaAtual.getcasaVisitada()+1):
+        casaAtual.setcasaVisitada(casaAtual.getcasaVisitada()+1)
+        casaAtual.setmovimentoVolta(3)
+        VisitadosAnterior.insert(len(VisitadosAnterior), 3)
+        paraDireita(self)
+    elif(movimentosPossivel[num] == casaAtual.getcasaVisitada()-1):
+        casaAtual.setcasaVisitada(casaAtual.getcasaVisitada()-1)
+        casaAtual.setmovimentoVolta(4)
+        VisitadosAnterior.insert(len(VisitadosAnterior), 4)
+        paraEsquerda(self)
+
+    listaVisitados.append(casaAtual.getcasaVisitada())
+    print(VisitadosAnterior)
+
+    tabuleiro.update()
+
+
+def IA_13(self):  # Nossa nova IA
+    global listaVisitados, VisitadosAnterior, casaAtual, casasFedidas, casasBrisosas
+    atirei = False
+    desenhaObstaculos()
+    casaBrilho = pyDatalog.ask('tem_ouro(X)').answers[0][0]
+    casaAtual.setcasaVisitada(13)
+    casaAtual.setAnterior(13)
+    listaVisitados.append(casaAtual.getcasaVisitada())
+    VisitadosAnterior.insert(len(VisitadosAnterior), 0)
+    print("VisitadosAnterior: " + str(VisitadosAnterior))
+    #movimentosPossivel = list(movimentosPossiveis(casaAtual.getcasaVisitada()))
+    #movimentaProximo(self,movimentosPossivel)
+    tabuleiro.update()
 
     while True:
-        time.sleep(5)
-        listaAcao = []
-        listaMov = []
-        listaMovPossiveis = movimentosPossiveis(casaAgente)
-        if casaAgente == casaBrilho:
-            pegaOuro(self)
-        if (casaAgente in listaFedor) and (len(listaWumpusCtz) == 0) and (wumpusVivo is True):
-            for casa in listaMovPossiveis:
-                if casa not in listaVisitados:
-                    if casa not in listaWumpus:
-                        listaWumpus.append(casa)
-                    elif casa not in listaWumpusCtz:
-                        listaWumpusCtz.append(casa)
-            listaAcao.append(casaAnterior)
-        elif (casaAgente in listaFedor) and (len(listaWumpusCtz) > 0) and (atirei is False) and (wumpusVivo is True):
-            linhaWumpus, colunaWumpus = getLinhaColuna(self, listaWumpusCtz[0])
-            linhaJogador, colunaJogador = getLinhaColuna(self, casaAgente)
-            if linhaWumpus == linhaJogador:
-                if casaAgente > listaWumpusCtz[0]:
-                    bangEsquerda(self)
-                    atirei = True
-                    print("TIRO")
-                else:
-                    bangDireita(self)
-                    atirei = True
-                    print("TIRO")
-            elif colunaWumpus == colunaJogador:
-                if casaAgente > listaWumpusCtz[0]:
-                    bangCima(self)
-                    atirei = True
-                    print("TIRO")
-                else:
-                    bangBaixo(self)
-                    atirei = True
-                    print("TIRO")
-        if (casaAgente in listaBrisa) and (len(listaPocoCtz) < 3):
-            for casa in listaMovPossiveis:
-                if casa not in listaVisitados:
-                    if casa not in listaPoco:
-                        listaPoco.append(casa)
-                    elif casa not in listaPocoCtz:
-                        listaPocoCtz.append(casa)
-            listaAcao.append(casaAnterior)
-        if pegouOuro is True:
-            listaVisitados.reverse()
-            while len(listaVisitados) > 0:
-                acao = listaVisitados[0]
-                listaVisitados.remove(acao)
-                if acao == (casaAgente - 1):
-                    paraEsquerda(self)
-                elif acao == (casaAgente - 4):
-                    paraCima(self)
-                elif acao == (casaAgente + 1):
-                    paraDireita(self)
-                elif acao == (casaAgente + 4):
-                    paraBaixo(self)
-        else:
-            for mov in listaMovPossiveis:
-                if wumpusVivo is True:
-                    if (len(listaWumpusCtz) > 0) and (len(listaPocoCtz) >= 3):
-                        if (mov not in listaWumpusCtz) and (mov not in listaPocoCtz):
-                            listaMov.append(mov)
-                    elif (len(listaWumpusCtz) > 0) and (len(listaPocoCtz) < 3):
-                        if (mov not in listaWumpusCtz) and (mov not in listaPoco):
-                            listaMov.append(mov)
-                    elif (len(listaWumpusCtz) == 0) and (len(listaPocoCtz) >= 3):
-                        if (mov not in listaWumpus) and (mov not in listaPocoCtz):
-                            listaMov.append(mov)
-                    else:
-                        if (mov not in listaWumpus) and (mov not in listaPoco):
-                            listaMov.append(mov)
-                    if len(listaMov) == 0:
-                        listaMov.append(listaMovPossiveis[random.randint(0, len(listaMovPossiveis)-1)])
-                else:
-                    if len(listaPocoCtz) >= 3:
-                        if mov not in listaPocoCtz:
-                            listaMov.append(mov)
-                    elif len(listaPocoCtz) < 3:
-                        if mov not in listaPoco:
-                            listaMov.append(mov)
-                    elif len(listaPocoCtz) >= 3:
-                        if mov not in listaPocoCtz:
-                            listaMov.append(mov)
-                    else:
-                        if mov not in listaPoco:
-                            listaMov.append(mov)
-                    if len(listaMov) == 0:
-                        listaMov.append(listaMovPossiveis[random.randint(0,len(listaMovPossiveis)-1)])
-            if len(listaAcao) == 0:
-                for mov in listaMov:
-                    if mov not in listaVisitados:
-                        listaAcao.append(mov)
-                if len(listaAcao) > 0:
-                    random.shuffle(listaAcao)
-                    if listaAcao[0] == (casaAgente - 1):
-                        paraEsquerda(self)
-                    elif listaAcao[0] == (casaAgente - 4):
-                        paraCima(self)
-                    elif listaAcao[0] == (casaAgente + 1):
-                        paraDireita(self)
-                    elif listaAcao[0] == (casaAgente + 4):
-                        paraBaixo(self)
-                else:
-                    random.shuffle(listaMov)
-                    if listaMov[0] == (casaAgente - 1):
-                        paraEsquerda(self)
-                    elif listaMov[0] == (casaAgente - 4):
-                        paraCima(self)
-                    elif listaMov[0] == (casaAgente + 1):
-                        paraDireita(self)
-                    elif listaMov[0] == (casaAgente + 4):
-                        paraBaixo(self)
-            else:
-                if listaAcao[0] == (casaAgente - 1):
-                    paraEsquerda(self)
-                elif listaAcao[0] == (casaAgente - 4):
-                    paraCima(self)
-                elif listaAcao[0] == (casaAgente + 1):
-                    paraDireita(self)
-                elif listaAcao[0] == (casaAgente + 4):
-                    paraBaixo(self)
-        listaVisitados.append(casaAgente)
-        casaAnterior = int(casaAgente)
-        casaAgente = getRetangulo(self, coordsCacador[0], coordsCacador[1])
-        if fimDeJogo(casaAgente):
+        if(fimDeJogo(casaAtual.getcasaVisitada()) == True):
             break
+        print("\n --------------NOVA ITERAÇÃO---------------")
+        if(wumpusVivo == False):
+            print("O WUMPUS TA MORTO!!!")
+            casasFedidas.clear()
+        movimentosPossivel = list(movimentosPossiveis(casaAtual.getcasaVisitada()))
+        fimDeJogo(casaAtual)
+        movimentaProximo(self, movimentosPossivel)
+
+        if(wumpusVivo == False):
+            if(casaBrilho == casaAtual.getcasaVisitada()):
+                pegaOuro(self)
+                print("PEGOU O OURO!!")
+                i = len(VisitadosAnterior) - 1
+                while(i>=0):
+                    time.sleep(1)
+                    print("Indo pro anterior")
+                    anteriorOuro(self, VisitadosAnterior, i)
+                    i=i-1
+                print("BREAK!")
+                casaAtual.setcasaVisitada(13)
+                #fimDeJogo(casaAtual.getcasaVisitada())
+                #time.sleep(100)
+
+            elif(brisaNaCasa(casaAtual.getcasaVisitada()) == True):
+                casasBrisosas.append(casaAtual.getcasaVisitada())
+                movimentaAnterior(self)
+                continue
+        else:
+
+            if(casaBrilho == casaAtual.getcasaVisitada()):
+                pegaOuro(self)
+                print("PEGOU O OURO!!")
+                i = len(VisitadosAnterior) - 1
+                while(i>=0):
+                    time.sleep(1)
+                    print("Indo pro anterior")
+                    anteriorOuro(self, VisitadosAnterior, i)
+                    print("BREAK!")
+                    i=i-1
+                    #break
+                casaAtual.setcasaVisitada(13)
+                #fimDeJogo(casaAtual.getcasaVisitada())
+                #ti
+
+            if(brisaNaCasa(casaAtual.getcasaVisitada()) == True and fedorNaCasa(casaAtual.getcasaVisitada()) == True):
+                casasFedidas.append(casaAtual.getcasaVisitada())
+                casasBrisosas.append(casaAtual.getcasaVisitada())
+                num = {}
+                if(wumpusVivo == True):
+                    if(casaAtual.getcasaVisitada() in [14,15]):
+                        num = random.choice([0,1,2])
+                    elif(casaAtual.getcasaVisitada() in [13,9]):
+                        num = random.choice([1,2])
+                    elif(casaAtual.getcasaVisitada() in [6,7,10,11]):
+                        num = random.choice([0,1,2,3])
+                    elif(casaAtual.getcasaVisitada() in [2,3]):
+                        num = random.choice([0,2,3])
+                    elif(casaAtual.getcasaVisitada() == 16):
+                        num = random.choice([0,1])
+                    elif(casaAtual.getcasaVisitada() in [8,12]):
+                        num = random.choice([0,1,3])
+                    elif(casaAtual.getcasaVisitada() == 4):
+                        num = random.choice([0,3])
+                    elif(casaAtual.getcasaVisitada() == 1):
+                        num = random.choice([0,1])
+                    atirarFlecha(self, casaAtual.getcasaVisitada(), num)
+                movimentaAnterior(self)
+                continue
+
+            elif(brisaNaCasa(casaAtual.getcasaVisitada()) == True):
+                casasBrisosas.append(casaAtual.getcasaVisitada())
+                movimentaAnterior(self)
+                continue
+
+            elif(fedorNaCasa(casaAtual.getcasaVisitada()) == True):
+                casasFedidas.append(casaAtual.getcasaVisitada())
+                num = {}
+                if(wumpusVivo == True):
+                    if(casaAtual.getcasaVisitada() in [14,15]):
+                        num = random.choice([0,1,2])
+                    elif(casaAtual.getcasaVisitada() in [13,9]):
+                        num = random.choice([1,2])
+                    elif(casaAtual.getcasaVisitada() in [6,7,10,11]):
+                        num = random.choice([0,1,2,3])
+                    elif(casaAtual.getcasaVisitada() in [2,3]):
+                        num = random.choice([0,2,3])
+                    elif(casaAtual.getcasaVisitada() == 16):
+                        num = random.choice([0,1])
+                    elif(casaAtual.getcasaVisitada() in [8,12]):
+                        num = random.choice([0,1,3])
+                    elif(casaAtual.getcasaVisitada() == 4):
+                        num = random.choice([0,3])
+                    elif(casaAtual.getcasaVisitada() == 1):
+                        num = random.choice([0,1])
+                    atirarFlecha(self, casaAtual.getcasaVisitada(), num)
+                movimentaAnterior(self)
+                continue
+
+            else:
+                movimentaProximo(self, movimentosPossivel)
+                continue
 
 def Player():
     tabuleiro.bind('<Left>', paraEsquerda)
@@ -799,8 +890,9 @@ def Player():
     tabuleiro.bind('<Button-1>', pegaOuro)
     tabuleiro.focus_set()
 
+
 def IA1():
-    IA(mainframe)
+    IA_13(mainframe)
 
 botaoPlayer = Button(mainframe, text="Jogador", command=Player)
 botaoPlayer.place(x=50, y=20)
