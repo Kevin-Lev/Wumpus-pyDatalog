@@ -359,8 +359,8 @@ def fimDeJogo(casaJogador):
         botaoNao = Button(janelaFim, text="Não", command=Exit)
         botaoNao.place(x=100, y=70)
         return True
-    if ((wumpus[0][0] == casaJogador) and wumpusVivo) or (poco[0][0] == casaJogador) or (poco[1][0] == casaJogador) or (
-                poco[2][0] == casaJogador):
+    #if ((wumpus[0][0] == casaJogador) and wumpusVivo) or (poco[0][0] == casaJogador) or (poco[1][0] == casaJogador) or (poco[2][0] == casaJogador):
+    if ((wumpus[0][0] == casaJogador) and wumpusVivo) or (poco[0][0] == casaJogador) or (poco[1][0] == casaJogador):
         janelaFim.wm_title("Game Over")
         janelaFim.deiconify()
         labelFim = Label(janelaFim, text="Game Over!\n\nDeseja jogar novamente?")
@@ -537,7 +537,7 @@ def pegaOuro(self):
             pegouOuro = True
 
 
-while (len(buracoRetangulo) < 3):
+while (len(buracoRetangulo) < 2):
     num_random = randint(1, 16)
     if ((num_random != 13 and num_random != 14 and num_random != 9) and num_random not in buracoRetangulo):
         buracoRetangulo.append(num_random)
@@ -559,7 +559,7 @@ while (True):
 
 coordsBuraco1 = tabuleiro.coords(buracoRetangulo[0])
 coordsBuraco2 = tabuleiro.coords(buracoRetangulo[1])
-coordsBuraco3 = tabuleiro.coords(buracoRetangulo[2])
+#coordsBuraco3 = tabuleiro.coords(buracoRetangulo[2])
 coordsWumpus = tabuleiro.coords(WumpusRetangulo)
 coordsTesouro = tabuleiro.coords(tesouroWumpus)
 
@@ -569,8 +569,8 @@ def desenhaObstaculos():
     tabuleiro.create_text(coordsBuraco1[0] + 50, coordsBuraco1[1] + 50, text="BURACO", fill="white")
     tabuleiro.create_oval(coordsBuraco2[0], coordsBuraco2[1], coordsBuraco2[2], coordsBuraco2[3], fill="black")
     tabuleiro.create_text(coordsBuraco2[0] + 50, coordsBuraco2[1] + 50, text="BURACO", fill="white")
-    tabuleiro.create_oval(coordsBuraco3[0], coordsBuraco3[1], coordsBuraco3[2], coordsBuraco3[3], fill="black")
-    tabuleiro.create_text(coordsBuraco3[0] + 50, coordsBuraco3[1] + 50, text="BURACO", fill="white")
+    #tabuleiro.create_oval(coordsBuraco3[0], coordsBuraco3[1], coordsBuraco3[2], coordsBuraco3[3], fill="black")
+    #tabuleiro.create_text(coordsBuraco3[0] + 50, coordsBuraco3[1] + 50, text="BURACO", fill="white")
     if wumpusVivo is True:
         tabuleiro.create_image(coordsWumpus[0] + 50, coordsWumpus[1] + 50, image=fotoWumpus)
     tabuleiro.create_image(coordsTesouro[0] + 50, coordsTesouro[1] + 50, image=fotoTesouro)
@@ -666,7 +666,6 @@ def anteriorOuro(self, VisitadosAnterior, i): # Quando pega o ouro, realiza todo
         paraDireita(self)
     elif(VisitadosAnterior[i] == 3):
         paraEsquerda(self)
-
     tabuleiro.update()
 
 
@@ -769,11 +768,13 @@ def IA_13(self):  # Nossa nova IA
     print("VisitadosAnterior: " + str(VisitadosAnterior))
     #movimentosPossivel = list(movimentosPossiveis(casaAtual.getcasaVisitada()))
     #movimentaProximo(self,movimentosPossivel)
-    tabuleiro.update()
+    #tabuleiro.update()
 
-    while True:
-        if(fimDeJogo(casaAtual.getcasaVisitada()) == True):
-            break
+    #while True:
+    while fimDeJogo(casaAtual.getcasaVisitada()) is False:
+        tabuleiro.update()
+        #if fimDeJogo(casaAtual.getcasaVisitada()) is True:
+        #    break
         print("\n --------------NOVA ITERAÇÃO---------------")
         if(wumpusVivo == False):
             print("O WUMPUS TA MORTO!!!")
@@ -816,9 +817,9 @@ def IA_13(self):  # Nossa nova IA
                     #break
                 casaAtual.setcasaVisitada(13)
                 #fimDeJogo(casaAtual.getcasaVisitada())
-                #ti
+                break
 
-            if(brisaNaCasa(casaAtual.getcasaVisitada()) == True and fedorNaCasa(casaAtual.getcasaVisitada()) == True):
+            if(brisaNaCasa(casaAtual.getcasaVisitada()) == True) and (fedorNaCasa(casaAtual.getcasaVisitada()) == True):
                 casasFedidas.append(casaAtual.getcasaVisitada())
                 casasBrisosas.append(casaAtual.getcasaVisitada())
                 num = {}
